@@ -8,7 +8,7 @@ if test "`id -u`" -ne 0
 	exit
 fi
 
-echo " Uninstalling..."
+echo -n " Uninstalling..."
 
 # Uninstall latuxit script.
 if [ -f /usr/local/bin/latuxit ]; then
