@@ -18,7 +18,7 @@ fi
 # Check dependencies.
 echo -n " Checking dependencies..."
 for pkg in ${deps[@]}; do
-	command -v $pkg >/dev/null 2>&1 || { echo "$pkg not found. Aborting." >&2; exit 1; }
+	command -v $pkg >/dev/null 2>&1 || { echo -e "\n\t\"$pkg\" not found. Aborting." >&2; exit 1; }
 done
 echo " Passed."
 
