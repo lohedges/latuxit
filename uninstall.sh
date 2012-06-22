@@ -25,4 +25,4 @@ if [ -d ~/.latuxit ]; then
 	rm -r ~/.latuxit
 fi
 
-echo " Done."
+echo -e " \e[00;32mDone.\e[00m"

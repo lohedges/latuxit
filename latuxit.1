@@ -63,7 +63,7 @@ to match an image to an equation in the database. While it is possible to direct
 .SH OPTIONS
 .B
 latuxit
-supports the following short- and long-form command-line options. All options should be surrounded by double quotation marks, i.e. "\fIOPTION\fP"\fR, to ensure that they are parsed correctly. Invoking
+supports the following short- and long-form command-line options. Invoking
 .B latuxit
 with no options will open the editor defined by the
 .B LATUXIT_EDITOR
@@ -71,22 +71,22 @@ environment variable. The user can then type an equation and
 .B latuxit
 will proceed as normal once the file has been saved.
 .TP
-.BI \-e= "EQUATION" "\fR,\fP \-\^\-equation="EQUATION
+.BI \-e " EQUATION" "\fR,\fP \-\^\-equation "EQUATION
 .I EQUATION
-in LaTeX markup. No $ symbols are needed. Ensure that there are no blank spaces in the equation, else it will fail to be parsed correctly. If spaces are desired, use the
-.I LaTeX
-spacing commands instead, e.g. \\. (thinspace), \\; (thickspace), etc.
+in LaTeX markup. No $ symbols are needed. The
+.B EQUATION
+should be surrounded by double quotation marks, i.e. "\fIOPTION\fP"\fR, to ensure that it is parsed correctly.
 .TP
-.BI \-c= "COLOR" "\fR,\fP \-\^\-color="COLOR
+.BI \-c " COLOR" "\fR,\fP \-\^\-color "COLOR
 Where
 .I COLOR
 is one of the 68 standard colors defined in
 .IR ~/.latuxit/latuxit.colors ,
 or, alternatively, a
 .I COLOR
-in {R,G,B} format, where R,G,B=[0\-1.0], or [0\-255].
+in {R,G,B} format, where R,G,B=[0\-1.0], or [0\-255]. RGB colors should be surrounded by double quotation marks, i.e. "\fI{R,G,B}\fP"\fR, to ensure they are parsed correctly. Also make sure that there aren't any blank spaces on either side of any of the RGB values.
 .TP
-.BI \-o= "FILE_PREFIX" "\fR,\fP \-\^\-output="FILE_PREFIX
+.BI \-o " FILE_PREFIX" "\fR,\fP \-\^\-output "FILE_PREFIX
 .I FILE_PREFIX
 is a prefix used for all output images, e.g
 .IR FILE_PREFIX .pdf.

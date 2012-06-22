@@ -18,9 +18,9 @@ fi
 # Check dependencies.
 echo -n " Checking dependencies..."
 for pkg in ${deps[@]}; do
-	command -v $pkg >/dev/null 2>&1 || { echo -e "\n\t\"$pkg\" not found. Aborting." >&2; exit 1; }
+	command -v $pkg >/dev/null 2>&1 || { echo -e "\n\t\e[1;34m\"$pkg\"\e[00m not found. \e[0;31mAborting.\e[00m" >&2; exit 1; }
 done
-echo " Passed."
+echo -e " \e[00;32mPassed.\e[00m"
 
 echo -n " Installing..."
 
@@ -35,6 +35,9 @@ else
 fi
 
 # Install man page.
+if [ ! -d /usr/local/man ]; then
+	mkdir /usr/local/man
+fi
 if [ ! -d /usr/local/man/man1 ]; then
 	mkdir /usr/local/man/man1
 fi
@@ -59,11 +62,10 @@ if [ ! -f ~/.latuxit/latuxit.colors ]; then
 fi
 
 # Change latuxit directory permissions.
-user=`logname`
 if [[ `uname` == "Darwin" ]]; then
-	chown -R $user:staff ~/.latuxit
+	chown -R $(logname):staff ~/.latuxit
 else
-	chown -R $user:users ~/.latuxit
+	chown -R $(logname):users ~/.latuxit
 fi
 
-echo " Done."
+echo -e " \e[00;32mDone.\e[00m"

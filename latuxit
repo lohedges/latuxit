@@ -53,48 +53,41 @@ purge () {
 			read -e purge
 		done
 		if [[ "$purge" == "y" || "$purge" == "Y" ]]; then
-			rm cache/*
+			rm -f cache/*
 		fi
 	fi
 }
 
 # Simple parser for command line options.
-# Could have used getopts but wanted long- and short-form options.
-for i in $*
+while [ $# -gt 0 ]
 do
-	case "$i" in
-		-e=*|--equation=*)
-		LATUXIT_EQUATION=`echo "$i" | sed 's/[-a-zA-Z0-9]*=//'`
-		LATUXIT_EQUATION_SET=true
-		;;
-	-c=*|--color=*)
-		LATUXIT_COLOR=`echo "$i" | sed 's/[-a-zA-Z0-9]*=//'`
-		LATUXIT_COLOR_SET=true
-		;;
-	-o=*|--output=*)
-		LATUXIT_FILE_NAME=`echo "$i" | sed 's/[-a-zA-Z0-9]*=//'`
-		LATUXIT_FILE_NAME_SET=true
-		;;
+	case "$1" in
+	-e|--equation)
+		LATUXIT_EQUATION="$2";
+		LATUXIT_EQUATION_SET=true;;
+	-c|--color)
+		LATUXIT_COLOR="$2";
+		LATUXIT_COLOR_SET=true;;
+	-o|--output)
+		LATUXIT_FILE_NAME="$2";
+		LATUXIT_FILE_NAME_SET=true;;
 	-p|--purge)
-		LATUXIT_PURGE=true
-		;;
-		*.pdf|*.ps)
-		LATUXIT_IMAGE="$i"; LATUXIT_IMAGE_SET=true
+		LATUXIT_PURGE=true;;
+	-h|--help)
+		man latuxit; exit;;
+	*.pdf|*.ps)
+		LATUXIT_IMAGE="$1"; LATUXIT_IMAGE_SET=true
 		if [ "$(echo ${LATUXIT_IMAGE#*.})" == "pdf" ]; then
 			LATUXIT_IMAGE_TYPE=pdf
 		elif [ "$(echo ${LATUXIT_IMAGE#*.})" == "ps" ]; then
 			LATUXIT_IMAGE_TYPE=ps
-		fi
-		;;
-	-h|--help)
-		man latuxit; exit
-		;;
-	*)
-		echo " Unknown option: $i"
-		echo " Run \"latuxit --help\" for information"
-		exit
-		;;
+		fi;;
+	-*)
+		echo " Unrecognized option \"$1\"";
+		echo " Run \"latuxit --help\" for information";
+		exit;;
 	esac
+	shift
 done
 
 # Change to working directory.
@@ -164,7 +157,7 @@ if [ "$LATUXIT_COLOR" != "Black" ]; then
 		else
 			color_check=`echo $LATUXIT_COLOR | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$'`
 			if [ "$LATUXIT_COLOR" != "$color_check" ]; then
-				color_check=`echo $LATUXIT_COLOR | grep '^{[0-1].[0-9]*,[0-1].[0-9]*,[0-1].[0-9]*}$'`
+				color_check=`echo $LATUXIT_COLOR | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$'`
 				if [ "$LATUXIT_COLOR" != "$color_check" ]; then
 					echo "RGB string doesn't appear to be formatted correctly."
 					echo "--color=\"{R,G,B}\" where R,G,B = [0-255] or [0-1.0]"
