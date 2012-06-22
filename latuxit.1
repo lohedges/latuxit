@@ -73,7 +73,9 @@ will proceed as normal once the file has been saved.
 .TP
 .BI \-e= "EQUATION" "\fR,\fP \-\^\-equation="EQUATION
 .I EQUATION
-in LaTeX markup. No $ symbols are needed.
+in LaTeX markup. No $ symbols are needed. Ensure that there are no blank spaces in the equation, else it will fail to be parsed correctly. If spaces are desired, use the
+.I LaTeX
+spacing commands instead, e.g. \\. (thinspace), \\; (thickspace), etc.
 .TP
 .BI \-c= "COLOR" "\fR,\fP \-\^\-color="COLOR
 Where
