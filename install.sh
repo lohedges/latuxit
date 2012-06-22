@@ -4,7 +4,7 @@
 # Checks for root permission.
 if test "`id -u`" -ne 0
 	then
-	echo "Please run the installer with sudo."
+	echo "Please run the installer as root."
 	exit
 fi
 
