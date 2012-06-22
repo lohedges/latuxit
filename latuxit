@@ -58,6 +58,15 @@ purge () {
 	fi
 }
 
+# Create unique identity hash for equation.
+equation_hash () {
+	if [[ `uname` == "Darwin" ]]; then
+		HASH=`echo $LATUXIT_EQUATION | md5`
+	else
+		HASH=`echo $LATUXIT_EQUATION | md5sum | awk '{print $1}'`
+	fi
+}
+
 # Simple parser for command line options.
 while [ $# -gt 0 ]
 do
@@ -84,7 +93,7 @@ do
 		fi;;
 	-*)
 		echo " Unrecognized option \"$1\"";
-		echo " Run \"latuxit --help\" for information";
+		echo " Run \"latuxit --help\" for information.";
 		exit;;
 	esac
 	shift
@@ -170,25 +179,38 @@ if [ "$LATUXIT_COLOR" != "Black" ]; then
 	fi
 fi
 
-# Create unique identity hash for equation.
-if [[ `uname` == "Darwin" ]]; then
-	HASH=`echo $LATUXIT_EQUATION | md5`
-else
-	HASH=`echo $LATUXIT_EQUATION | md5sum | awk '{print $1}'`
-fi
+exit_status=1
 
-# Create tex file.
-if [ "$LATUXIT_RGB_MODE" == "true" ]; then
-	echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{rgb}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
-else
-	echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
-fi
+# Loop until a valid equation has been entered.
+while [ "$exit_status" != "0" ]; do
 
-# Cache equation.
-echo $LATUXIT_EQUATION > cache/$HASH
+	# Creat hash.
+	equation_hash
 
-# Process tex file.
-pdflatex temp.tex > /dev/null 2>&1
+	# Cache equation.
+	echo $LATUXIT_EQUATION > cache/$HASH
+
+	# Create tex file.
+	if [ "$LATUXIT_RGB_MODE" == "true" ]; then
+		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{rgb}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+	else
+		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+	fi
+
+	# Process tex file.
+	pdflatex -halt-on-error temp.tex > /dev/null 2>&1
+
+	# Get exit status.
+	exit_status="$?"
+
+	if [ "$exit_status" != "0" ]; then
+		echo " Could not process equation, please edit..."
+		sleep 1
+		$LATUXIT_EDITOR cache/$HASH
+		LATUXIT_EQUATION=`cat cache/$HASH`
+		rm -f cache/$HASH
+	fi
+done
 
 # Crop pdf.
 pdfcrop temp.pdf crop.pdf > /dev/null 2>&1

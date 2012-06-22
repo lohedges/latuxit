@@ -84,7 +84,20 @@ will proceed as normal once the file has been saved.
 in LaTeX markup. No $ symbols are needed. The
 .B EQUATION
 should be surrounded by double quotation marks, i.e. "\fIOPTION\fP"\fR, to
-ensure that it is parsed correctly.
+ensure that it is parsed correctly. If no
+.I EQUATION
+is passed on the command-line then
+.B latuxit
+will open the
+.I EQUATION
+editor defined by the
+.B LATUXIT_EDITOR
+environment variable. If
+.B pdflatex
+fails to process an
+.I EQUATION
+the user will be given the opportunity to edit it using
+.BR LATUXIT_EDITOR .
 .TP
 .BI \-c " COLOR" "\fR,\fP \-\^\-color "COLOR
 Where
@@ -174,22 +187,13 @@ for the inspiration
 Ideas taken from Giovanni Lanzani
 .BR (www.lanzani.nl/latexit.html) .
 .SH BUGS
-.B latuxit
-currently doesn't have very sophisticated error handling. In particular, it will
-hang if the
-.I EQUATION
-is malformed and cannot be processed by
-.BR pdflatex .
-In this situtation the user can abort by pressing
-.B CTRL+D
-twice.
 .PP
 .B latuxit
 metadata is written as a comment to the bottom of the
 .B pdf
 and
 .B postscript
-image files. Whilst this doesn't cause problems with the viewers for which
+image files. While this doesn't cause problems with the viewers for which
 .B latuxit
 has been tested, this may cause issues in some rare cases.
 .PP

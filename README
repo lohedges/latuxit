@@ -41,7 +41,11 @@ OPTIONS
        -e EQUATION, --equation EQUATION
 	      EQUATION in LaTeX markup. No $ symbols are needed. The  EQUATION
 	      should  be  surrounded by double quotation marks, i.e. "OPTION",
-	      to ensure that it is parsed correctly.
+	      to ensure that it is parsed correctly. If no EQUATION is	passed
+	      on  the  command-line then latuxit will open the EQUATION editor
+	      defined by the LATUXIT_EDITOR environment variable. If  pdflatex
+	      fails to process an EQUATION the user will be given the opportu‐
+	      nity to edit it using LATUXIT_EDITOR.
 
        -c COLOR, --color COLOR
 	      Where COLOR  is  one  of	the  68	 standard  colors  defined  in
@@ -99,14 +103,9 @@ CREDITS
        Ideas taken from Giovanni Lanzani (www.lanzani.nl/latexit.html).
 
 BUGS
-       latuxit	currently  doesn't  have very sophisticated error handling. In
-       particular, it will hang if the EQUATION is  malformed  and  cannot  be
-       processed by pdflatex.  In this situtation the user can abort by press‐
-       ing CTRL+D twice.
-
-       latuxit metadata is written as a comment to the bottom of the  pdf  and
-       postscript  image  files.  Whilst  this doesn't cause problems with the
-       viewers for which latuxit has been tested, this	may  cause  issues  in
+       latuxit	metadata  is written as a comment to the bottom of the pdf and
+       postscript image files. While this  doesn't  cause  problems  with  the
+       viewers	for  which  latuxit  has been tested, this may cause issues in
        some rare cases.
 
        Email bug reports to lester.hedges+latuxit@gmail.com.
