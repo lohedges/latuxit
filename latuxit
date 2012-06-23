@@ -203,6 +203,7 @@ while [ "$exit_status" != "0" ]; do
 	# Get exit status.
 	exit_status="$?"
 
+	# Pdflatex failed, open equation for editing.
 	if [ "$exit_status" != "0" ]; then
 		echo " Could not process equation, please edit..."
 		sleep 1
@@ -215,13 +216,15 @@ done
 # Crop pdf.
 pdfcrop temp.pdf crop.pdf > /dev/null 2>&1
 
+# Create metadata.
 echo "%%latuxit_hash $HASH" > metadata
 echo "%%latuxit_color $LATUXIT_COLOR" >> metadata
 
+# Append metadata to pdf
 cat crop.pdf metadata > temp
 mv temp crop.pdf
 
-# create postscript copy of equation
+# Create postscript copy of equation.
 if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
 	gs -sDEVICE=pswrite -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
 	cat temp.ps metadata > temp
@@ -229,6 +232,7 @@ if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
 	rm temp.ps
 fi
 
+# Move pdf to user directory.
 mv crop.pdf ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.pdf
 
 # Clean up.

@@ -8,6 +8,7 @@ NAME
 SYNOPSIS
        latuxit [options]
        latuxit [options] [FILE]
+       latuxit [FILE]
 
 DESCRIPTION
        LaTuXiT is a command-line Linux clone of the excellent Mac OS X program
@@ -68,7 +69,7 @@ OPTIONS
 FILES
        file   Running latuxit on a  FILE  that	was  previously	 created  with
 	      latuxit  will  search  the file for metadata and open the corre‐
-	      sponding equation from the cache using the editor defined by the
+	      sponding equation from the cache in the editor  defined  by  the
 	      LATUXIT_EDITOR  environment  variable (see ENVIRONMENT VARIABLES
 	      section). This allows the user to	 modify	 an  existing  latuxit
 	      image. The image and equation are overwritten unless a different
