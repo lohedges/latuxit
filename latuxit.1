@@ -87,7 +87,10 @@ will proceed as normal once the file has been saved.
 in LaTeX markup. No $ symbols are needed. The
 .B EQUATION
 should be surrounded by double quotation marks, i.e. "\fIOPTION\fP"\fR, to
-ensure that it is parsed correctly. If no
+ensure that it is parsed correctly. When the equation starts with a minus
+sign make sure the character is enclosed in curly braces, 
+i.e. "\fI{-}...\fP"\fR , so that it isn't mistaken as an identifier for a
+command-line argument. If no
 .I EQUATION
 is passed on the command-line then
 .B latuxit
