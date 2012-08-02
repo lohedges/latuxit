@@ -24,7 +24,7 @@ DESCRIPTION
        Latuxit	works  by hashing each equation string and building a database
        in ~/.latuxit/cache/.  Metadata written to the  output  pdf  and	 post‐
        script  images  allows  latuxit to match an image to an equation in the
-       database. While it is possible to directly embedd  equations  into  the
+       database. While it is possible to directly  embed  equations  into  the
        output images, inconsistencies in equation formatting (particularly for
        long, multi-line equations) makes it difficult to parse the metadata in
        a well defined way. Unfortuntely this means that one can no longer edit
