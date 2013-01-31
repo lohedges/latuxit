@@ -121,7 +121,7 @@ if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
 			if [ $(grep -c "$LATUXIT_SEARCH" $i) -eq 1 ]; then
 				hash=`echo $i | awk -F "cache/" '{print $2}'`
 				match=`grep "$LATUXIT_SEARCH" $i`
-				echo " $hash \"$match\""
+				echo "$hash \"$match\""
 			fi
 		done
 		exit
@@ -137,7 +137,7 @@ if [ "$LATUXIT_LIST_MODE" == "true" ]; then
 			hash=`echo $i | awk -F "cache/" '{print $2}'`
 			eqn=`cat $i`
 			echo "$hash \"$eqn\""
-		done | less
+		done
 		exit
 	else
 		echo " Equation cache is empty! Exiting."; exit
