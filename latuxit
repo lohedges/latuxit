@@ -31,7 +31,6 @@ LATUXIT_IMAGE_SET=false
 LATUXIT_RGB_MODE=false
 LATUXIT_HASH_MODE=false
 LATUXIT_SEARCH_MODE=false
-LATUXIT_LIST_MODE=false
 LATUXIT_PURGE=false
 
 # Source latuxit user defaults.
@@ -45,6 +44,10 @@ if [ ! -f ~/.latuxit/latuxit.colors ]; then
 	echo " Missing ~/.latuxit/latuxit.colors"
 	exit
 fi
+
+# Change to working directory.
+CURRENT_DIR=$PWD
+cd ~/.latuxit
 
 # Cache purge function.
 purge () {
@@ -70,6 +73,20 @@ equation_hash () {
 	fi
 }
 
+# List equations in cache.
+list () {
+	if [ "$(ls -A cache/)" ]; then
+		for i in $(ls cache/*); do
+			hash=`echo $i | awk -F "cache/" '{print $2}'`
+			eqn=`cat $i`
+			echo "$hash \"$eqn\""
+		done
+		exit
+	else
+		echo " Equation cache is empty!"; exit
+	fi
+}
+
 # Simple parser for command line options.
 while [ $# -gt 0 ]
 do
@@ -84,7 +101,8 @@ do
 		LATUXIT_FILE_NAME="$2";
 		LATUXIT_FILE_NAME_SET=true;;
 	-l|--list)
-		LATUXIT_LIST_MODE=true;;
+		list;
+		exit;;
 	-s|--search)
 		LATUXIT_SEARCH="$2";
 		LATUXIT_SEARCH_MODE=true;;
@@ -110,38 +128,10 @@ do
 	shift
 done
 
-# Change to working directory.
-CURRENT_DIR=$PWD
-cd ~/.latuxit
-
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
-	if [ "$(ls -A cache/)" ]; then
-		for i in $(ls cache/*); do
-			if [ $(grep -c "$LATUXIT_SEARCH" $i) -eq 1 ]; then
-				hash=`echo $i | awk -F "cache/" '{print $2}'`
-				match=`grep "$LATUXIT_SEARCH" $i`
-				echo "$hash \"$match\""
-			fi
-		done
-		exit
-	else
-		echo " Equation cache is empty! Exiting."; exit
-	fi
-fi
-
-# List all equations in cache.
-if [ "$LATUXIT_LIST_MODE" == "true" ]; then
-	if [ "$(ls -A cache/)" ]; then
-		for i in $(ls cache/*); do
-			hash=`echo $i | awk -F "cache/" '{print $2}'`
-			eqn=`cat $i`
-			echo "$hash \"$eqn\""
-		done
-		exit
-	else
-		echo " Equation cache is empty! Exiting."; exit
-	fi
+	list | grep $LATUXIT_SEARCH
+	exit
 fi
 
 # Run latuxit in hash mode (process existing equation from cache).
