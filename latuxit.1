@@ -71,6 +71,11 @@ parse the metadata in a well defined way. Unfortuntely this means that one can
 no longer edit an image if the equation cache is deleted or corrupt. In
 addition, images are not portable between different machines unless the cache
 is also transferred.
+.PP
+Due to the limited range of font sizes supported by LaTeX,
+.B latuxit
+uses the default size of 10pt. Since equations are output as vector images it
+is trivial to rescale them afterwards.
 .SH OPTIONS
 .B
 latuxit
@@ -85,10 +90,10 @@ will proceed as normal once the file has been saved.
 .BI \-e " EQUATION" "\fR,\fP \-\^\-equation "EQUATION
 .I EQUATION
 in LaTeX markup. No $ symbols are needed. The
-.B EQUATION
+.I EQUATION
 should be surrounded by double quotation marks, i.e. "\fIEQUATION\fP"\fR, to
 ensure that it is parsed correctly. When the equation starts with a minus
-sign make sure the character is enclosed in curly braces, 
+sign make sure the character is enclosed in curly braces,
 i.e. "\fI{-}...\fP"\fR , so that it isn't mistaken as an identifier for a
 command-line argument. If no
 .I EQUATION
@@ -123,6 +128,28 @@ is a prefix used for all output images, e.g
 .IR FILE_PREFIX .pdf.
 The default is
 .BR latuxit .
+.TP
+.BR \-l ", " \-\^\-list
+Lists all equations in the cache along with their hash. Output is
+piped through
+.B less
+for ease of viewing.
+.TP
+.BI \-s " EQUATION" "\fR,\fP \-\^\-search "EQUATION
+Searches the equation cache for all partial matches of
+.IR EQUATION .
+The matches are output along with the corresponding hash.
+.TP
+.BI \-m " HASH" "\fR,\fP \-\^\-md5 "HASH
+Run
+.B latuxit
+in "hash" mode. The
+.I HASH
+string is matched against equations in the cache. It should be long enough to
+ensure a unique match. Once a match is found,
+.B latuxit
+will open the equation for editing with
+.BR LATUXIT_EDITOR .
 .TP
 .BR \-p ", " \-\^\-purge
 Purge the equation cache.

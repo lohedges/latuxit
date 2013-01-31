@@ -29,6 +29,9 @@ LATUXIT_FILE_NAME_SET=false
 LATUXIT_EQUATION_SET=false
 LATUXIT_IMAGE_SET=false
 LATUXIT_RGB_MODE=false
+LATUXIT_HASH_MODE=false
+LATUXIT_SEARCH_MODE=false
+LATUXIT_LIST_MODE=false
 LATUXIT_PURGE=false
 
 # Source latuxit user defaults.
@@ -48,11 +51,11 @@ purge () {
 	if [ "$LATUXIT_PURGE_CONFIRMATION" == "true" ]; then
 		echo -n " Are you sure you want to purge the equation cache [Y/n]? "
 		read -e purge
-		while [[ "$purge" != "y" && "$purge" != "Y" && "$purge" != "n" && "$purge" != "N" ]]; do
+		while [[ "$purge" != "Y" && "$purge" != "n" && "$purge" != "N" ]]; do
 			echo -n " Are you sure you want to purge the equation cache [Y/n]? "
 			read -e purge
 		done
-		if [[ "$purge" == "y" || "$purge" == "Y" ]]; then
+		if [[ "$purge" == "Y" ]]; then
 			rm -f cache/*
 		fi
 	fi
@@ -80,6 +83,14 @@ do
 	-o|--output)
 		LATUXIT_FILE_NAME="$2";
 		LATUXIT_FILE_NAME_SET=true;;
+	-l|--list)
+		LATUXIT_LIST_MODE=true;;
+	-s|--search)
+		LATUXIT_SEARCH="$2";
+		LATUXIT_SEARCH_MODE=true;;
+	-m|--md5)
+		LATUXIT_HASH="$2";
+		LATUXIT_HASH_MODE=true;;
 	-p|--purge)
 		LATUXIT_PURGE=true;;
 	-h|--help)
@@ -102,6 +113,64 @@ done
 # Change to working directory.
 CURRENT_DIR=$PWD
 cd ~/.latuxit
+
+# Perform equation search (ignores all other options).
+if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
+	if [ "$(ls -A cache/)" ]; then
+		for i in $(ls cache/*); do
+			if [ $(grep -c "$LATUXIT_SEARCH" $i) -eq 1 ]; then
+				hash=`echo $i | awk -F "cache/" '{print $2}'`
+				match=`grep "$LATUXIT_SEARCH" $i`
+				echo " $hash \"$match\""
+			fi
+		done
+		exit
+	else
+		echo " Equation cache is empty! Exiting."; exit
+	fi
+fi
+
+# List all equations in cache.
+if [ "$LATUXIT_LIST_MODE" == "true" ]; then
+	if [ "$(ls -A cache/)" ]; then
+		for i in $(ls cache/*); do
+			hash=`echo $i | awk -F "cache/" '{print $2}'`
+			eqn=`cat $i`
+			echo "$hash \"$eqn\""
+		done | less
+		exit
+	else
+		echo " Equation cache is empty! Exiting."; exit
+	fi
+fi
+
+# Run latuxit in hash mode (process existing equation from cache).
+if [ "$LATUXIT_HASH_MODE" == "true" ]; then
+
+	# Check to see that an equation hasn't also been specified.
+	if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+		echo " Hash mode and equation specified. Exiting!"; exit
+	fi
+
+	# Check if cache is empty.
+	if [ "$(ls -A cache/)" ]; then
+		if ls cache/${LATUXIT_HASH}* &> /dev/null; then
+			# Find number of matches.
+			matches=`ls cache/${LATUXIT_HASH}* | wc -l`
+
+			if [ "$matches" -gt "1" ]; then
+				echo " Too many equations match, try longer hash sequence."; exit
+			fi
+
+			# Cat equation from cache into equation file.
+			cat cache/${LATUXIT_HASH}* > latuxit.eqn
+		else
+			echo " No match for hash! Exiting."; exit
+		fi
+	else
+		echo " Equation cache is empty! Exiting."; exit
+	fi
+fi
 
 # Open editor if no command line equation.
 if [ "$LATUXIT_IMAGE_SET" == "false" ]; then
