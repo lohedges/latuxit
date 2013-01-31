@@ -165,8 +165,10 @@ if [ "$LATUXIT_COLOR" != "Black" ]; then
 			exit
 		else
 			color_check=`echo $LATUXIT_COLOR | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$'`
+			rgb_style="RGB"
 			if [ "$LATUXIT_COLOR" != "$color_check" ]; then
 				color_check=`echo $LATUXIT_COLOR | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$'`
+				rgb_style="rgb"
 				if [ "$LATUXIT_COLOR" != "$color_check" ]; then
 					echo "RGB string doesn't appear to be formatted correctly."
 					echo "--color=\"{R,G,B}\" where R,G,B = [0-255] or [0-1.0]"
@@ -192,7 +194,7 @@ while [ "$exit_status" != "0" ]; do
 
 	# Create tex file.
 	if [ "$LATUXIT_RGB_MODE" == "true" ]; then
-		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{rgb}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{$rgb_style}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
 	else
 		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
 	fi

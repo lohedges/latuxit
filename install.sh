@@ -26,7 +26,7 @@ echo -n " Installing..."
 
 # Install script.
 if [ ! -d /usr/local/bin ]; then
-	mkdir /usr/local/bin
+	mkdir -p /usr/local/bin
 fi
 if [[ `uname` == "Darwin" ]]; then
 	install -g 0 -o 0 -m 0755 latuxit /usr/local/bin/latuxit
@@ -36,10 +36,10 @@ fi
 
 # Install man page.
 if [ ! -d /usr/local/man ]; then
-	mkdir /usr/local/man
+	mkdir -p /usr/local/man
 fi
 if [ ! -d /usr/local/man/man1 ]; then
-	mkdir /usr/local/man/man1
+	mkdir -p /usr/local/man/man1
 fi
 if [[ `uname` == "Darwin" ]]; then
 	install -g 0 -o 0 -m 0644 latuxit.1 /usr/local/man/man1/latuxit.1
