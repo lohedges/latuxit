@@ -191,15 +191,18 @@ else
 			LATUXIT_COLOR=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_color; done | awk '{print $2}'`
 		fi
 		if [ -f cache/$HASH ]; then
+			cp cache/$HASH equation_backup
 			$LATUXIT_EDITOR cache/$HASH
 			LATUXIT_EQUATION=`cat cache/$HASH`
 			if [ "$LATUXIT_FILE_NAME_SET" == "false" ]; then
 				LATUXIT_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
-				rm cache/$HASH
+				rm cache/$HASH equation_backup
 			else
 				OLD_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
 				if [ "$OLD_FILE_NAME" == "$LATUXIT_FILE_NAME" ]; then
-					rm cache/$HASH
+					rm cache/$HASH equation_backup
+				else
+					mv equation_backup cache/$HASH
 				fi
 			fi
 		else
