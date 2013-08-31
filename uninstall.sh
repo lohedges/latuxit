@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # uninstall script for LaTuXiT, see README for details
 
 # Checks for root permission.

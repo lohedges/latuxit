@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # installer script for LaTuXiT, see README for details
 
 # Checks for root permission.
