@@ -3,7 +3,7 @@ LATUXIT(1)							    LATUXIT(1)
 
 
 NAME
-       latuxit - create a cropped LaTeX equation in pdf and postscript format.
+       latuxit - create a cropped LaTeX equation in PDF and PostScript format.
 
 SYNOPSIS
        latuxit [options]
@@ -14,7 +14,7 @@ DESCRIPTION
        LaTuXiT is a command-line Linux clone of the excellent Mac OS X program
        LaTeXiT (http://pierre.chachatelier.fr/latexit)
 
-       Latuxit	creates  cropped  pdf and postscript images of LaTeX equations
+       Latuxit	creates  cropped  PDF and PostScript images of LaTeX equations
        processed by the pdflatex utility.  Latuxit has full RGB color  support
        and  also  accepts  any of the 68 standard colors known to dvips.  Like
        LaTeXiT, latuxit has reverse editing capability, i.e. one can  edit  an
@@ -22,8 +22,8 @@ DESCRIPTION
        latuxit.
 
        Latuxit works by hashing each equation string and building  a  database
-       in  ~/.latuxit/cache/.	Metadata  written  to the output pdf and post-
-       script images allows latuxit to match an image to an  equation  in  the
+       in  ~/.latuxit/cache/.	Metadata  written  to the output PDF and Post-
+       Script images allows latuxit to match an image to an  equation  in  the
        database.  While  it  is  possible to directly embed equations into the
        output images, inconsistencies in equation formatting (particularly for
        long, multi-line equations) makes it difficult to parse the metadata in
