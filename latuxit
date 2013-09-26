@@ -290,7 +290,7 @@ mv temp crop.pdf
 
 # Create postscript copy of equation.
 if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
-	gs -sDEVICE=pswrite -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
+	gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
 	cat temp.ps metadata > temp
 	mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
 	rm temp.ps
