@@ -35,14 +35,14 @@ LATUXIT_PURGE=false
 
 # Source latuxit user defaults.
 if [ -f ~/.latuxitrc ]; then
-	source ~/.latuxitrc
+    source ~/.latuxitrc
 elif [ -f ~/.latuxit/latuxitrc ]; then
-	source ~/.latuxit/latuxitrc
+    source ~/.latuxit/latuxitrc
 fi
 
 if [ ! -f ~/.latuxit/latuxit.colors ]; then
-	echo " Missing ~/.latuxit/latuxit.colors"
-	exit
+    echo " Missing ~/.latuxit/latuxit.colors"
+    exit
 fi
 
 # Change to working directory.
@@ -51,196 +51,196 @@ cd ~/.latuxit
 
 # Cache purge function.
 purge () {
-	if [ "$LATUXIT_PURGE_CONFIRMATION" == "true" ]; then
-		echo -n " Are you sure you want to purge the equation cache [Y/n]? "
-		read -e purge
-		while [[ "$purge" != "Y" && "$purge" != "n" && "$purge" != "N" ]]; do
-			echo -n " Are you sure you want to purge the equation cache [Y/n]? "
-			read -e purge
-		done
-		if [[ "$purge" == "Y" ]]; then
-			rm -f cache/*
-		fi
-	fi
+    if [ "$LATUXIT_PURGE_CONFIRMATION" == "true" ]; then
+        echo -n " Are you sure you want to purge the equation cache [Y/n]? "
+        read -e purge
+        while [[ "$purge" != "Y" && "$purge" != "n" && "$purge" != "N" ]]; do
+            echo -n " Are you sure you want to purge the equation cache [Y/n]? "
+            read -e purge
+        done
+        if [[ "$purge" == "Y" ]]; then
+            rm -f cache/*
+        fi
+    fi
 }
 
 # Create unique identity hash for equation.
 equation_hash () {
-	if [[ `uname` == "Darwin" ]]; then
-		HASH=`echo $LATUXIT_EQUATION | md5`
-	else
-		HASH=`echo $LATUXIT_EQUATION | md5sum | awk '{print $1}'`
-	fi
+    if [[ `uname` == "Darwin" ]]; then
+        HASH=`echo $LATUXIT_EQUATION | md5`
+    else
+        HASH=`echo $LATUXIT_EQUATION | md5sum | awk '{print $1}'`
+    fi
 }
 
 # List equations in cache.
 list () {
-	if [ "$(ls -A cache/)" ]; then
-		for i in $(ls cache/*); do
-			hash=`echo $i | awk -F "cache/" '{print $2}'`
-			eqn=`cat $i`
-			echo "$hash \"$eqn\""
-		done
-		exit
-	else
-		echo " Equation cache is empty!"; exit
-	fi
+    if [ "$(ls -A cache/)" ]; then
+        for i in $(ls cache/*); do
+            hash=`echo $i | awk -F "cache/" '{print $2}'`
+            eqn=`cat $i`
+            echo "$hash \"$eqn\""
+        done
+        exit
+    else
+        echo " Equation cache is empty!"; exit
+    fi
 }
 
 # Simple parser for command line options.
 while [ $# -gt 0 ]
 do
-	case "$1" in
-	-e|--equation)
-		LATUXIT_EQUATION="$2";
-		LATUXIT_EQUATION_SET=true;;
-	-c|--color)
-		LATUXIT_COLOR="$2";
-		LATUXIT_COLOR_SET=true;;
-	-o|--output)
-		LATUXIT_FILE_NAME="$2";
-		LATUXIT_FILE_NAME_SET=true;;
-	-l|--list)
-		list;
-		exit;;
-	-s|--search)
-		LATUXIT_SEARCH="$2";
-		LATUXIT_SEARCH_MODE=true;;
-	-m|--md5)
-		LATUXIT_HASH="$2";
-		LATUXIT_HASH_MODE=true;;
-	-p|--purge)
-		LATUXIT_PURGE=true;;
-	-h|--help)
-		man latuxit; exit;;
-	*.pdf|*.ps)
-		LATUXIT_IMAGE="$1"; LATUXIT_IMAGE_SET=true
-		if [ "$(echo ${LATUXIT_IMAGE#*.})" == "pdf" ]; then
-			LATUXIT_IMAGE_TYPE=pdf
-		elif [ "$(echo ${LATUXIT_IMAGE#*.})" == "ps" ]; then
-			LATUXIT_IMAGE_TYPE=ps
-		fi;;
-	-*)
-		echo " Unrecognized option \"$1\"";
-		echo " Run \"latuxit --help\" for information.";
-		exit;;
-	esac
-	shift
+    case "$1" in
+    -e|--equation)
+        LATUXIT_EQUATION="$2";
+        LATUXIT_EQUATION_SET=true;;
+    -c|--color)
+        LATUXIT_COLOR="$2";
+        LATUXIT_COLOR_SET=true;;
+    -o|--output)
+        LATUXIT_FILE_NAME="$2";
+        LATUXIT_FILE_NAME_SET=true;;
+    -l|--list)
+        list;
+        exit;;
+    -s|--search)
+        LATUXIT_SEARCH="$2";
+        LATUXIT_SEARCH_MODE=true;;
+    -m|--md5)
+        LATUXIT_HASH="$2";
+        LATUXIT_HASH_MODE=true;;
+    -p|--purge)
+        LATUXIT_PURGE=true;;
+    -h|--help)
+        man latuxit; exit;;
+    *.pdf|*.ps)
+        LATUXIT_IMAGE="$1"; LATUXIT_IMAGE_SET=true
+        if [ "$(echo ${LATUXIT_IMAGE#*.})" == "pdf" ]; then
+            LATUXIT_IMAGE_TYPE=pdf
+        elif [ "$(echo ${LATUXIT_IMAGE#*.})" == "ps" ]; then
+            LATUXIT_IMAGE_TYPE=ps
+        fi;;
+    -*)
+        echo " Unrecognized option \"$1\"";
+        echo " Run \"latuxit --help\" for information.";
+        exit;;
+    esac
+    shift
 done
 
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
-	list | grep $LATUXIT_SEARCH
-	exit
+    list | grep $LATUXIT_SEARCH
+    exit
 fi
 
 # Run latuxit in hash mode (process existing equation from cache).
 if [ "$LATUXIT_HASH_MODE" == "true" ]; then
 
-	# Check to see that an equation hasn't also been specified.
-	if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
-		echo " Hash mode and equation specified. Exiting!"; exit
-	fi
+    # Check to see that an equation hasn't also been specified.
+    if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+        echo " Hash mode and equation specified. Exiting!"; exit
+    fi
 
-	# Check if cache is empty.
-	if [ "$(ls -A cache/)" ]; then
-		if ls cache/${LATUXIT_HASH}* &> /dev/null; then
-			# Find number of matches.
-			matches=`ls cache/${LATUXIT_HASH}* | wc -l`
+    # Check if cache is empty.
+    if [ "$(ls -A cache/)" ]; then
+        if ls cache/${LATUXIT_HASH}* &> /dev/null; then
+            # Find number of matches.
+            matches=`ls cache/${LATUXIT_HASH}* | wc -l`
 
-			if [ "$matches" -gt "1" ]; then
-				echo " Too many equations match, try longer hash sequence."; exit
-			fi
+            if [ "$matches" -gt "1" ]; then
+                echo " Too many equations match, try longer hash sequence."; exit
+            fi
 
-			# Cat equation from cache into equation file.
-			cat cache/${LATUXIT_HASH}* > latuxit.eqn
-		else
-			echo " No match for hash! Exiting."; exit
-		fi
-	else
-		echo " Equation cache is empty! Exiting."; exit
-	fi
+            # Cat equation from cache into equation file.
+            cat cache/${LATUXIT_HASH}* > latuxit.eqn
+        else
+            echo " No match for hash! Exiting."; exit
+        fi
+    else
+        echo " Equation cache is empty! Exiting."; exit
+    fi
 fi
 
 # Open editor if no command line equation.
 if [ "$LATUXIT_IMAGE_SET" == "false" ]; then
-	if [ "$LATUXIT_EQUATION_SET" == "false" ]; then
-		if [ "$LATUXIT_PURGE" == "true" ]; then
-			purge; exit
-		fi
-		$LATUXIT_EDITOR latuxit.eqn
-		if [ -f latuxit.eqn ]; then
-			if [ -s latuxit.eqn ]; then
-				LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
-			else
-				echo " No equation defined. Exiting!"; exit
-			fi
-		else
-			echo " No equation defined. Exiting!"; exit
-		fi
-	fi
+    if [ "$LATUXIT_EQUATION_SET" == "false" ]; then
+        if [ "$LATUXIT_PURGE" == "true" ]; then
+            purge; exit
+        fi
+        $LATUXIT_EDITOR latuxit.eqn
+        if [ -f latuxit.eqn ]; then
+            if [ -s latuxit.eqn ]; then
+                LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+            else
+                echo " No equation defined. Exiting!"; exit
+            fi
+        else
+            echo " No equation defined. Exiting!"; exit
+        fi
+    fi
 # Read metadata from existing image and open for editing.
 # Only read color metadata if color option is unset.
 else
-	if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
-		echo "Ignoring equation. Searching for image metadata instead."
-	fi
-	if [ $(for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}') ]; then
-		HASH=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}'`
-		if [ "$LATUXIT_COLOR_SET" == "false" ]; then
-			LATUXIT_COLOR=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_color; done | awk '{print $2}'`
-		fi
-		if [ -f cache/$HASH ]; then
-			cp cache/$HASH equation_backup
-			$LATUXIT_EDITOR cache/$HASH
-			LATUXIT_EQUATION=`cat cache/$HASH`
-			if [ "$LATUXIT_FILE_NAME_SET" == "false" ]; then
-				LATUXIT_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
-				rm cache/$HASH equation_backup
-			else
-				OLD_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
-				if [ "$OLD_FILE_NAME" == "$LATUXIT_FILE_NAME" ]; then
-					rm cache/$HASH equation_backup
-				else
-					mv equation_backup cache/$HASH
-				fi
-			fi
-		else
-			echo " Equation not found in cache!"
-			exit
-		fi
-	else
-		echo " Image file not generated by latuxit. Aborting!"; exit
-	fi
+    if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+        echo "Ignoring equation. Searching for image metadata instead."
+    fi
+    if [ $(for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}') ]; then
+        HASH=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}'`
+        if [ "$LATUXIT_COLOR_SET" == "false" ]; then
+            LATUXIT_COLOR=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_color; done | awk '{print $2}'`
+        fi
+        if [ -f cache/$HASH ]; then
+            cp cache/$HASH equation_backup
+            $LATUXIT_EDITOR cache/$HASH
+            LATUXIT_EQUATION=`cat cache/$HASH`
+            if [ "$LATUXIT_FILE_NAME_SET" == "false" ]; then
+                LATUXIT_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
+                rm cache/$HASH equation_backup
+            else
+                OLD_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
+                if [ "$OLD_FILE_NAME" == "$LATUXIT_FILE_NAME" ]; then
+                    rm cache/$HASH equation_backup
+                else
+                    mv equation_backup cache/$HASH
+                fi
+            fi
+        else
+            echo " Equation not found in cache!"
+            exit
+        fi
+    else
+        echo " Image file not generated by latuxit. Aborting!"; exit
+    fi
 fi
 
 # Check for color support.
 if [ "$LATUXIT_COLOR" != "Black" ]; then
-	color_check=`grep -w $LATUXIT_COLOR latuxit.colors`
-	if [ "$LATUXIT_COLOR" != "$color_check" ]; then
-		if [ "${LATUXIT_COLOR:0:1}" != "{" ]; then
-			echo " $LATUXIT_COLOR is not a supported color."
-			echo " Listing supported colors..."
-			sleep 1
-			less latuxit.colors
-			echo " Alternatively, try RGB mode: --color=\"{R,G,B}\""
-			exit
-		else
-			color_check=`echo $LATUXIT_COLOR | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$'`
-			rgb_style="RGB"
-			if [ "$LATUXIT_COLOR" != "$color_check" ]; then
-				color_check=`echo $LATUXIT_COLOR | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$'`
-				rgb_style="rgb"
-				if [ "$LATUXIT_COLOR" != "$color_check" ]; then
-					echo "RGB string doesn't appear to be formatted correctly."
-					echo "--color=\"{R,G,B}\" where R,G,B = [0-255] or [0-1.0]"
-					exit
-				else LATUXIT_RGB_MODE=true
-				fi
-			else LATUXIT_RGB_MODE=true
-			fi
-		fi
-	fi
+    color_check=`grep -w $LATUXIT_COLOR latuxit.colors`
+    if [ "$LATUXIT_COLOR" != "$color_check" ]; then
+        if [ "${LATUXIT_COLOR:0:1}" != "{" ]; then
+            echo " $LATUXIT_COLOR is not a supported color."
+            echo " Listing supported colors..."
+            sleep 1
+            less latuxit.colors
+            echo " Alternatively, try RGB mode: --color=\"{R,G,B}\""
+            exit
+        else
+            color_check=`echo $LATUXIT_COLOR | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$'`
+            rgb_style="RGB"
+            if [ "$LATUXIT_COLOR" != "$color_check" ]; then
+                color_check=`echo $LATUXIT_COLOR | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$'`
+                rgb_style="rgb"
+                if [ "$LATUXIT_COLOR" != "$color_check" ]; then
+                    echo "RGB string doesn't appear to be formatted correctly."
+                    echo "--color=\"{R,G,B}\" where R,G,B = [0-255] or [0-1.0]"
+                    exit
+                else LATUXIT_RGB_MODE=true
+                fi
+            else LATUXIT_RGB_MODE=true
+            fi
+        fi
+    fi
 fi
 
 exit_status=1
@@ -248,33 +248,33 @@ exit_status=1
 # Loop until a valid equation has been entered.
 while [ "$exit_status" != "0" ]; do
 
-	# Creat hash.
-	equation_hash
+    # Creat hash.
+    equation_hash
 
-	# Cache equation.
-	echo $LATUXIT_EQUATION > cache/$HASH
+    # Cache equation.
+    echo $LATUXIT_EQUATION > cache/$HASH
 
-	# Create tex file.
-	if [ "$LATUXIT_RGB_MODE" == "true" ]; then
-		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{$rgb_style}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
-	else
-		echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
-	fi
+    # Create tex file.
+    if [ "$LATUXIT_RGB_MODE" == "true" ]; then
+        echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{$rgb_style}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+    else
+        echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+    fi
 
-	# Process tex file.
-	pdflatex -halt-on-error temp.tex > /dev/null 2>&1
+    # Process tex file.
+    pdflatex -halt-on-error temp.tex > /dev/null 2>&1
 
-	# Get exit status.
-	exit_status="$?"
+    # Get exit status.
+    exit_status="$?"
 
-	# Pdflatex failed, open equation for editing.
-	if [ "$exit_status" != "0" ]; then
-		echo " Could not process equation, please edit..."
-		sleep 1
-		$LATUXIT_EDITOR cache/$HASH
-		LATUXIT_EQUATION=`cat cache/$HASH`
-		rm -f cache/$HASH
-	fi
+    # Pdflatex failed, open equation for editing.
+    if [ "$exit_status" != "0" ]; then
+        echo " Could not process equation, please edit..."
+        sleep 1
+        $LATUXIT_EDITOR cache/$HASH
+        LATUXIT_EQUATION=`cat cache/$HASH`
+        rm -f cache/$HASH
+    fi
 done
 
 # Crop pdf.
@@ -290,10 +290,10 @@ mv temp crop.pdf
 
 # Create postscript copy of equation.
 if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
-	gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
-	cat temp.ps metadata > temp
-	mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
-	rm temp.ps
+    gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
+    cat temp.ps metadata > temp
+    mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
+    rm temp.ps
 fi
 
 # Move pdf to user directory.
@@ -308,16 +308,16 @@ rm metadata
 
 # Purge equation cache.
 if [ "$LATUXIT_PURGE" == "true" ]; then
-	purge
+    purge
 fi
 
 # Check cache size and prune if necessary.
 cache_size=`ls cache/* | wc -l`
 cache_overflow=$((cache_size-LATUXIT_CACHE_SIZE))
 if [ $cache_overflow -gt 0 ]; then
-	for i in $( ls -tr cache | head -n $cache_overflow ); do
-		rm cache/$i
-	done
+    for i in $( ls -tr cache | head -n $cache_overflow ); do
+        rm cache/$i
+    done
 fi
 
 # Switch back to original directory.
