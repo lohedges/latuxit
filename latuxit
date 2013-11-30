@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # LaTuXit: A command line implementation of the Mac OS X program LaTeXit (http://pierre.chachatelier.fr/latexit).
 
