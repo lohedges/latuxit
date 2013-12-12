@@ -104,7 +104,7 @@ do
         list;
         exit;;
     -s|--search)
-        LATUXIT_SEARCH="$2";
+        LATUXIT_SEARCH_STRING="$2";
         LATUXIT_SEARCH_MODE=true;;
     -m|--md5)
         LATUXIT_HASH="$2";
@@ -130,8 +130,12 @@ done
 
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
-    list | grep $LATUXIT_SEARCH
-    exit
+    if [ -n "$LATUXIT_SEARCH_STRING" ]; then
+        list | grep $LATUXIT_SEARCH_STRING 2> /dev/null
+        exit
+    else
+        echo "No search string was specified!"; exit
+    fi
 fi
 
 # Run latuxit in hash mode (process existing equation from cache).
