@@ -33,13 +33,14 @@ LATUXIT_HASH_MODE=false
 LATUXIT_SEARCH_MODE=false
 LATUXIT_PURGE=false
 
-# Source latuxit user defaults.
+# Source latuxit user variables.
 if [ -f ~/.latuxitrc ]; then
     source ~/.latuxitrc
 elif [ -f ~/.latuxit/latuxitrc ]; then
     source ~/.latuxit/latuxitrc
 fi
 
+# Check for color file.
 if [ ! -f ~/.latuxit/latuxit.colors ]; then
     echo " Missing ~/.latuxit/latuxit.colors"
     exit
@@ -252,7 +253,7 @@ exit_status=1
 # Loop until a valid equation has been entered.
 while [ "$exit_status" != "0" ]; do
 
-    # Creat hash.
+    # Create hash.
     equation_hash
 
     # Cache equation.
