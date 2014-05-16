@@ -41,7 +41,7 @@ illustrated below.
 $ latuxit [options]
 ```
 
-* Equation passed via stdin (three examples).
+* Equation passed via stdin. *three examples*
 
 ``` bash
 $ echo "equation" | latuxit [options]
@@ -49,7 +49,7 @@ $ cat [FILE] | latuxit [options]
 $ latuxit < [FILE] [options]
 ```
 
-* Existing image edited using link back feature (two examples).
+* Existing image edited using link back feature. *two examples*
 
 ``` bash
 $ latuxit [IMAGE]
