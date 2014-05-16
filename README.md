@@ -4,8 +4,8 @@ Copyright &copy; 2012 Lester Hedges. Released under the [GPL](http://www.gnu.org
 
 ## About
 `latuxit` is a a command-line Linux clone of the excellent Mac OS X program
-[LaTeXiT](http://pierre.chachatelier.fr/latexit) allowing the creation of cropped
-LaTeX typset equations in both PDF and PostScript format.
+[LaTeXiT](http://pierre.chachatelier.fr/latexit). It provides a simple means of
+creating cropped LaTeX typset equations in both PDF and PostScript format.
 
 The program is a simple Bash script that requires no dependencies outside of the
 standard Tex Live core (other than Ghostscript for additional PostScript support).
@@ -41,7 +41,7 @@ illustrated below.
 $ latuxit [options]
 ```
 
-* Equation passed via stdin.
+* Equation passed via stdin (three examples).
 
 ``` bash
 $ echo "equation" | latuxit [options]
@@ -49,7 +49,7 @@ $ cat [FILE] | latuxit [options]
 $ latuxit < [FILE] [options]
 ```
 
-* Existing image edited using link back feature.
+* Existing image edited using link back feature (two examples).
 
 ``` bash
 $ latuxit [IMAGE]
