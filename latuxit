@@ -21,7 +21,7 @@
 LATUXIT_EDITOR=vim
 LATUXIT_COLOR=Black
 LATUXIT_COLOR_SET=false
-LATUXIT_CACHE_SIZE=1000
+LATUXIT_LIBRARY_SIZE=1000
 LATUXIT_POSTSCRIPT=true
 LATUXIT_PURGE_CONFIRMATION=true
 LATUXIT_FILE_NAME=latuxit
@@ -51,17 +51,17 @@ fi
 CURRENT_DIR=$PWD
 cd ~/.latuxit
 
-# Cache purge function.
+# Library purge function.
 purge () {
     if [ "$LATUXIT_PURGE_CONFIRMATION" == "true" ]; then
-        echo -n " Are you sure you want to purge the equation cache [Y/n]? "
+        echo -n " Are you sure you want to purge the equation library [Y/n]? "
         read -e purge
         while [[ "$purge" != "Y" && "$purge" != "n" && "$purge" != "N" ]]; do
-            echo -n " Are you sure you want to purge the equation cache [Y/n]? "
+            echo -n " Are you sure you want to purge the equation library [Y/n]? "
             read -e purge
         done
         if [[ "$purge" == "Y" ]]; then
-            rm -f cache/*
+            rm -f library/*
         fi
     fi
 }
@@ -75,17 +75,17 @@ equation_hash () {
     fi
 }
 
-# List equations in cache.
+# List equations in library.
 list () {
-    if [ "$(ls -A cache/)" ]; then
-        for i in $(ls cache/*); do
-            hash=`echo $i | awk -F "cache/" '{print $2}'`
+    if [ "$(ls -A library/)" ]; then
+        for i in $(ls library/*); do
+            hash=`echo $i | awk -F "library/" '{print $2}'`
             eqn=`cat $i`
             echo "$hash \"$eqn\""
         done
         exit
     else
-        echo " Equation cache is empty!"; exit
+        echo " Equation library is empty!"; exit
     fi
 }
 
@@ -159,31 +159,31 @@ if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
     fi
 fi
 
-# Run latuxit in hash mode (process existing equation from cache).
+# Run latuxit in hash mode (process existing equation from library).
 if [ "$LATUXIT_HASH_MODE" == "true" ]; then
 
     # Check to see that an equation hasn't also been specified.
-    if [ "$LATUXIT_EQUATION_SET" == "true" || "$LATUXIT_STDIN_MODE" == "true" ]; then
+    if [ "$LATUXIT_EQUATION_SET" == "true" ] || [ "$LATUXIT_STDIN_MODE" == "true" ]; then
         echo " Hash mode and equation specified. Exiting!"; exit
     fi
 
-    # Check if cache is empty.
-    if [ "$(ls -A cache/)" ]; then
-        if ls cache/${LATUXIT_HASH}* &> /dev/null; then
+    # Check if library is empty.
+    if [ "$(ls -A library/)" ]; then
+        if ls library/${LATUXIT_HASH}* &> /dev/null; then
             # Find number of matches.
-            matches=`ls cache/${LATUXIT_HASH}* | wc -l`
+            matches=`ls library/${LATUXIT_HASH}* | wc -l`
 
             if [ "$matches" -gt "1" ]; then
                 echo " Too many equations match, try longer hash sequence."; exit
             fi
 
-            # Cat equation from cache into equation file.
-            cat cache/${LATUXIT_HASH}* > latuxit.eqn
+            # Cat equation from library into equation file.
+            cat library/${LATUXIT_HASH}* > latuxit.eqn
         else
             echo " No match for hash! Exiting."; exit
         fi
     else
-        echo " Equation cache is empty! Exiting."; exit
+        echo " Equation library is empty! Exiting."; exit
     fi
 fi
 
@@ -209,7 +209,7 @@ if [ "$LATUXIT_IMAGE_SET" == "false" ]; then
 # Read metadata from existing image and open for editing.
 # Only read color metadata if color option is unset.
 else
-    if [ "$LATUXIT_EQUATION_SET" == "true" || "$LATUXIT_STDIN_MODE" == "true" ]; then
+    if [ "$LATUXIT_EQUATION_SET" == "true" ] || [ "$LATUXIT_STDIN_MODE" == "true" ]; then
         echo "Ignoring equation. Searching for image metadata instead."
     fi
     if [ $(for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}') ]; then
@@ -217,23 +217,23 @@ else
         if [ "$LATUXIT_COLOR_SET" == "false" ]; then
             LATUXIT_COLOR=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_color; done | awk '{print $2}'`
         fi
-        if [ -f cache/$HASH ]; then
-            cp cache/$HASH equation_backup
-            $LATUXIT_EDITOR cache/$HASH
-            LATUXIT_EQUATION=`cat cache/$HASH`
+        if [ -f library/$HASH ]; then
+            cp library/$HASH equation_backup
+            $LATUXIT_EDITOR library/$HASH
+            LATUXIT_EQUATION=`cat library/$HASH`
             if [ "$LATUXIT_FILE_NAME_SET" == "false" ]; then
                 LATUXIT_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
-                rm cache/$HASH equation_backup
+                rm library/$HASH equation_backup
             else
                 OLD_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
                 if [ "$OLD_FILE_NAME" == "$LATUXIT_FILE_NAME" ]; then
-                    rm cache/$HASH equation_backup
+                    rm library/$HASH equation_backup
                 else
-                    mv equation_backup cache/$HASH
+                    mv equation_backup library/$HASH
                 fi
             fi
         else
-            echo " Equation not found in cache!"
+            echo " Equation not found in library!"
             exit
         fi
     else
@@ -278,8 +278,8 @@ while [ "$exit_status" != "0" ]; do
     # Create hash.
     equation_hash
 
-    # Cache equation.
-    echo $LATUXIT_EQUATION > cache/$HASH
+    # Store equation in library.
+    echo $LATUXIT_EQUATION > library/$HASH
 
     # Create tex file.
     if [ "$LATUXIT_RGB_MODE" == "true" ]; then
@@ -298,9 +298,9 @@ while [ "$exit_status" != "0" ]; do
     if [ "$exit_status" != "0" ]; then
         echo " Could not process equation, please edit..."
         sleep 1
-        $LATUXIT_EDITOR cache/$HASH
-        LATUXIT_EQUATION=`cat cache/$HASH`
-        rm -f cache/$HASH
+        $LATUXIT_EDITOR library/$HASH
+        LATUXIT_EQUATION=`cat library/$HASH`
+        rm -f library/$HASH
     fi
 done
 
@@ -333,17 +333,17 @@ rm temp.aux
 rm temp.log
 rm metadata
 
-# Purge equation cache.
+# Purge equation library.
 if [ "$LATUXIT_PURGE" == "true" ]; then
     purge
 fi
 
-# Check cache size and prune if necessary.
-cache_size=`ls cache/* | wc -l`
-cache_overflow=$((cache_size-LATUXIT_CACHE_SIZE))
-if [ $cache_overflow -gt 0 ]; then
-    for i in $( ls -tr cache | head -n $cache_overflow ); do
-        rm cache/$i
+# Check library size and prune if necessary.
+library_size=`ls library/* | wc -l`
+library_overflow=$((library_size-LATUXIT_LIBRARY_SIZE))
+if [ $library_overflow -gt 0 ]; then
+    for i in $( ls -tr library | head -n $library_overflow ); do
+        rm library/$i
     done
 fi
 

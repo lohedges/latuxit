@@ -53,8 +53,8 @@ if [ ! -d ~/.latuxit ]; then
     mkdir -p ~/.latuxit
 fi
 
-if [ ! -d ~/.latuxit/cache ]; then
-    mkdir -p ~/.latuxit/cache
+if [ ! -d ~/.latuxit/library ]; then
+    mkdir -p ~/.latuxit/library
 fi
 
 if [ ! -f ~/.latuxit/latuxit.colors ]; then
