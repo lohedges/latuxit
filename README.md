@@ -215,4 +215,4 @@ $ latuxit -m "abad"
 
 ## Credits
 * [LaTeXiT](http://pierre.chachatelier.fr/latexit), for the inspiration.
-* Ideas taken from [Giovanni Lanzani](www.lanzani.nl/latexit.html).
+* Ideas taken from [Giovanni Lanzani](http://www.lanzani.nl/latexit.html).
