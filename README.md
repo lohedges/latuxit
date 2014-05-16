@@ -32,16 +32,28 @@ $ sudo uninstall.sh
 
 ## Usage
 `latuxit` can be run in a variety of different ways using equation input from the
-command-line, an editor, or from stdin. The different use cases are as follows:
+command-line, an editor, or from stdin. Several different use cases are
+illustrated below.
+
+* Equation passed using the command-line option or typed in an editor.
 
 ``` bash
 $ latuxit [options]
-$ latuxit [options] [IMAGE]
-$ latuxit [IMAGE]
+```
 
+* Equation passed via stdin.
+
+``` bash
 $ echo "equation" | latuxit [options]
 $ cat [FILE] | latuxit [options]
 $ latuxit < [FILE] [options]
+```
+
+* Existing image edited using link back feature.
+
+``` bash
+$ latuxit [IMAGE]
+$ latuxit [IMAGE] [options]
 ```
 
 ## Options
