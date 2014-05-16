@@ -30,6 +30,7 @@ LATUXIT_EQUATION_SET=false
 LATUXIT_IMAGE_SET=false
 LATUXIT_RGB_MODE=false
 LATUXIT_HASH_MODE=false
+LATUXIT_STDIN_MODE=false
 LATUXIT_SEARCH_MODE=false
 LATUXIT_PURGE=false
 
@@ -129,13 +130,32 @@ do
     shift
 done
 
+# Check for equation input from stdin.
+if [ ! -t 0 ]; then
+    LATUXIT_STDIN_MODE=true
+
+    if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+        echo " Equation was set using stdin and from the command-line!"; exit
+    fi
+
+    if [ -f latuxit.eqn ]; then
+        rm latuxit.eqn
+    fi
+
+    while read -r line ; do
+        echo $line >> latuxit.eqn
+    done
+
+    LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+fi
+
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
     if [ -n "$LATUXIT_SEARCH_STRING" ]; then
         list | grep $LATUXIT_SEARCH_STRING 2> /dev/null
         exit
     else
-        echo "No search string was specified!"; exit
+        echo " No search string was specified!"; exit
     fi
 fi
 
@@ -143,7 +163,7 @@ fi
 if [ "$LATUXIT_HASH_MODE" == "true" ]; then
 
     # Check to see that an equation hasn't also been specified.
-    if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+    if [ "$LATUXIT_EQUATION_SET" == "true" || "$LATUXIT_STDIN_MODE" == "true" ]; then
         echo " Hash mode and equation specified. Exiting!"; exit
     fi
 
@@ -167,27 +187,29 @@ if [ "$LATUXIT_HASH_MODE" == "true" ]; then
     fi
 fi
 
-# Open editor if no command line equation.
+# Open editor if no equation from command-line or stdin.
 if [ "$LATUXIT_IMAGE_SET" == "false" ]; then
     if [ "$LATUXIT_EQUATION_SET" == "false" ]; then
-        if [ "$LATUXIT_PURGE" == "true" ]; then
-            purge; exit
-        fi
-        $LATUXIT_EDITOR latuxit.eqn
-        if [ -f latuxit.eqn ]; then
-            if [ -s latuxit.eqn ]; then
-                LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+        if [ "$LATUXIT_STDIN_MODE" == "false" ]; then
+            if [ "$LATUXIT_PURGE" == "true" ]; then
+                purge; exit
+            fi
+            $LATUXIT_EDITOR latuxit.eqn
+            if [ -f latuxit.eqn ]; then
+                if [ -s latuxit.eqn ]; then
+                    LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+                else
+                    echo " No equation defined. Exiting!"; exit
+                fi
             else
                 echo " No equation defined. Exiting!"; exit
             fi
-        else
-            echo " No equation defined. Exiting!"; exit
         fi
     fi
 # Read metadata from existing image and open for editing.
 # Only read color metadata if color option is unset.
 else
-    if [ "$LATUXIT_EQUATION_SET" == "true" ]; then
+    if [ "$LATUXIT_EQUATION_SET" == "true" || "$LATUXIT_STDIN_MODE" == "true" ]; then
         echo "Ignoring equation. Searching for image metadata instead."
     fi
     if [ $(for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}') ]; then
