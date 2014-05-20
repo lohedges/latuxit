@@ -10,8 +10,8 @@ creating cropped LaTeX typset equations in both PDF and PostScript format.
 
 The program is a simple Bash script that requires no dependencies outside of the
 standard Tex Live core (other than Ghostscript for additional PostScript support).
-The script replicates two of LaTeXiT's key features: an equation library, and a link
-back feature to allow editing of existing equations. `latuxit` works by hashing each
+The script replicates two of LaTeXiT's key features: an equation library, and a reverse
+lookup feature to allow editing of existing equations. `latuxit` works by hashing each
 equation string and building a library. Metadata written as comments in the output PDF
 and PostScript images allows `latuxit` to match an image to an equation in the library.
 `latuxit` has full RGB color support and also accepts any of the 68 standard colors
@@ -42,7 +42,7 @@ illustrated below.
 $ latuxit [options]
 ```
 
-* Equation passed via stdin. *three examples*
+* Equation passed via stdin. (*three examples*)
 
 ``` bash
 $ echo "equation" | latuxit [options]
@@ -50,7 +50,7 @@ $ cat [FILE] | latuxit [options]
 $ latuxit < [FILE] [options]
 ```
 
-* Existing image edited using link back feature. *two examples*
+* Existing image edited using reverse lookup feature. (*two examples*)
 
 ``` bash
 $ latuxit [IMAGE]
@@ -122,7 +122,7 @@ Purge the equation library.
 ```
 Get help (loads the man page).
 
-## Link back feature
+## Reverse lookup feature
 Running `latuxit` on an image that was previously created with `latuxit` will search
 the file for metadata and open the corresponding equation from the library in the
 editor defined by the `LATUXIT_EDITOR` environment variable. This allows the user to
