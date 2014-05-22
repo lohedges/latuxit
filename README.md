@@ -1,6 +1,7 @@
 # LaTuXiT
 
 Copyright &copy; 2012, 2013, 2014 Lester Hedges.
+
 Released under the [GPL](http://www.gnu.org/copyleft/gpl.html).
 
 ## About
