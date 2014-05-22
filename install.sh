@@ -2,8 +2,7 @@
 # installer script for LaTuXiT, see README for details
 
 # Checks for root permission.
-if test "`id -u`" -ne 0
-    then
+if test "`id -u`" -ne 0; then
     echo "Please run the installer as root."
     exit
 fi
@@ -61,11 +60,17 @@ if [ ! -f ~/.latuxit/latuxit.colors ]; then
     cp latuxit.colors ~/.latuxit/latuxit.colors
 fi
 
+user=`logname 2>&1 /dev/null`
+
+if [ $? -ne 0 ]; then
+    user=$SUDO_USER
+fi
+
 # Change latuxit directory permissions.
 if [[ `uname` == "Darwin" ]]; then
-    chown -R $(logname):staff ~/.latuxit
+    chown -R ${user}:staff ~/.latuxit
 else
-    chown -R $(logname):users ~/.latuxit
+    chown -R ${user}:users ~/.latuxit
 fi
 
 echo -e " \e[00;32mDone.\e[00m"
