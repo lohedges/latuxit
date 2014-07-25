@@ -137,7 +137,9 @@ should be surrounded by double quotation marks, i.e. "\fIEQUATION\fP"\fR, to
 ensure that it is parsed correctly. When the equation starts with a minus
 sign make sure the character is enclosed in curly braces,
 i.e. "\fI{-}...\fP"\fR , so that it isn't mistaken as an identifier for a
-command-line argument. If the line break command
+command-line argument. Alternatively, simply insert a blank space at the start
+of the equation. This will be ignored by LaTeX when the equation is typset.
+If the line break command
 .B \e\e
 is needed, e.g. in a matrix, then three backslashes should be used to ensure
 that the equation is parsed correctly, i.e.
