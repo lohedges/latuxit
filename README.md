@@ -73,12 +73,14 @@ been saved and closed.
 surrounded by double quotation marks, i.e. `"EQUATION"`, to ensure that it is parsed
 correctly. When the equation starts with a minus sign make sure the character is
 enclosed in curly braces, i.e. `"{-}..."` , so that it isn't mistaken as an identifier
-for	a command-line argument. If the line break command `\\` is needed, e.g. in a
-matrix, then three backslashes should be used to ensure that the equation is parsed
-correctly, i.e. `\\\`. If no `EQUATION` is passed on the command-line or from stdin
-then `latuxit` will open the `EQUATION` editor defined by the `LATUXIT_EDITOR`
-environment variable. If `pdflatex` fails to process an `EQUATION` then the user
-will be given the opportunity to edit it again in order to correct any mistakes.
+for a command-line argument. Alternatively, simply insert a blank space at the start of
+the equation. This will be ignored by LaTeX when the equation is typset. If the line
+break command `\\` is needed, e.g. in a matrix, then three backslashes should be used
+to ensure that the equation is parsed correctly, i.e. `\\\`. If no `EQUATION` is
+passed on the command-line or from stdin then `latuxit` will open the `EQUATION`
+editor defined by the `LATUXIT_EDITOR` environment variable. If `pdflatex` fails to
+process an `EQUATION` then the user will be given the opportunity to edit it again
+in order to correct any mistakes.
 
 ``` bash
 -c COLOR, --color COLOR
