@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # installer script for LaTuXiT, see README for details
 
+# Set installation prefix.
+if [ ! -n "${PREFIX:-}" ]; then
+    PREFIX=/usr/local
+fi
+
 # Checks for root permission.
 if test "`id -u`" -ne 0; then
     echo "Please run the installer as root."
@@ -24,28 +29,28 @@ echo -e " \e[00;32mPassed.\e[00m"
 echo -n " Installing..."
 
 # Install script.
-if [ ! -d /usr/local/bin ]; then
-    mkdir -p /usr/local/bin
+if [ ! -d $PREFIX/bin ]; then
+    mkdir -p $PREFIX/bin
 fi
 if [[ `uname` == "Darwin" ]]; then
-    install -g 0 -o 0 -m 0755 latuxit /usr/local/bin/latuxit
+    install -g 0 -o 0 -m 0755 latuxit $PREFIX/bin/latuxit
 else
-    install -Dm755 latuxit /usr/local/bin/
+    install -Dm755 latuxit $PREFIX/bin/
 fi
 
 # Install man page.
-if [ ! -d /usr/local/man ]; then
-    mkdir -p /usr/local/man
+if [ ! -d $PREFIX/man ]; then
+    mkdir -p $PREFIX/man
 fi
-if [ ! -d /usr/local/man/man1 ]; then
-    mkdir -p /usr/local/man/man1
+if [ ! -d $PREFIX/man/man1 ]; then
+    mkdir -p $PREFIX/man/man1
 fi
 if [[ `uname` == "Darwin" ]]; then
-    install -g 0 -o 0 -m 0644 latuxit.1 /usr/local/man/man1/latuxit.1
+    install -g 0 -o 0 -m 0644 latuxit.1 $PREFIX/man/man1/latuxit.1
 else
-    install -Dm644 latuxit.1 /usr/local/man/man1/
+    install -Dm644 latuxit.1 $PREFIX/man/man1/
 fi
-gzip -f /usr/local/man/man1/latuxit.1
+gzip -f $PREFIX/man/man1/latuxit.1
 
 # Set up latuxit directory tree if it doesn't exist.
 if [ ! -d ~/.latuxit ]; then
