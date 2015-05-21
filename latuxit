@@ -111,10 +111,10 @@ while [ $# -gt 0 ]; do
     -m|--md5)
         LATUXIT_HASH="$2";
         LATUXIT_HASH_MODE=true;;
-    -p|--purge)
-        LATUXIT_PURGE=true;;
     -b|--batch)
         LATUXIT_BATCH_MODE=true;;
+    -p|--purge)
+        LATUXIT_PURGE=true;;
     -h|--help)
         man latuxit; exit;;
     *.pdf|*.ps)
