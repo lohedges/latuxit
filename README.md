@@ -122,7 +122,8 @@ Run `latuxit` in "batch" mode. In batch mode, `latuxit` will no longer ask
 the user to edit any failed equations. This is useful when processing a
 large number of equations using a batch script, e.g. when the user doesn't
 want to edit many potentially incorrect equations by hand, or deal with memory
-issues by opening many instances of the `LATUXIT_EDITOR`.
+issues by opening many instances of the `LATUXIT_EDITOR`. Any failed equations
+will be reported to `stdout` along with the `[FAILED]` prefix.
 
 ``` bash
 -p, --purge
