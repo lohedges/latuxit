@@ -197,6 +197,23 @@ ensure a unique match. Once a match is found,
 will open the equation for editing with
 .BR LATUXIT_EDITOR .
 .TP
+.BR \-b ", " \-\^\-batch
+Run
+.B latuxit
+in "batch" mode. In batch mode
+.B latuxit
+will no longer ask the user to edit any failed equations. This is useful when
+processing a large number of equations using a batch script, e.g. when the user
+doesn't want to edit many potentially incorrect equations by hand, or deal with
+memory issues by opening many instanaces of the
+.BR LATUXIT_EDITOR .
+Any failed equations will be reported to
+.B stdout
+along with the
+.B [FAILED]
+prefix.
+.
+.TP
 .BR \-p ", " \-\^\-purge
 Purge the equation library.
 .TP
