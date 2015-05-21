@@ -32,6 +32,7 @@ LATUXIT_RGB_MODE=false
 LATUXIT_HASH_MODE=false
 LATUXIT_STDIN_MODE=false
 LATUXIT_SEARCH_MODE=false
+LATUXIT_BATCH_MODE=false
 LATUXIT_PURGE=false
 
 # Source latuxit user variables.
@@ -112,6 +113,8 @@ while [ $# -gt 0 ]; do
         LATUXIT_HASH_MODE=true;;
     -p|--purge)
         LATUXIT_PURGE=true;;
+    -b|--batch)
+        LATUXIT_BATCH_MODE=true;;
     -h|--help)
         man latuxit; exit;;
     *.pdf|*.ps)
@@ -270,6 +273,7 @@ if [ "$LATUXIT_COLOR" != "Black" ]; then
 fi
 
 exit_status=1
+FAILED=false
 
 # Loop until a valid equation has been entered.
 while [ "$exit_status" != "0" ]; do
@@ -295,42 +299,58 @@ while [ "$exit_status" != "0" ]; do
 
     # Pdflatex failed, open equation for editing.
     if [ "$exit_status" != "0" ]; then
-        echo " Could not process equation, please edit..."
-        sleep 1
-        $LATUXIT_EDITOR library/$HASH
-        LATUXIT_EQUATION=`cat library/$HASH`
-        rm -f library/$HASH
+        if [ "$LATUXIT_BATCH_MODE" != "true" ]; then
+            echo " Could not process equation, please edit..."
+            sleep 1
+            $LATUXIT_EDITOR library/$HASH
+            LATUXIT_EQUATION=`cat library/$HASH`
+            rm -f library/$HASH
+        else
+            # Delete failed equation from library.
+            rm -f library/$HASH
+
+            # Mark equation as failed.
+            FAILED=true
+
+            # Output failed equation to stdout.
+            echo " [FAILED] $LATUXIT_EQUATION"
+
+            # Set exit status to abort loop.
+            exit_status=0
+        fi
     fi
 done
 
-# Crop pdf.
-pdfcrop temp.pdf crop.pdf > /dev/null 2>&1
+if [ "$FAILED" != "true" ]; then
+    # Crop pdf.
+    pdfcrop temp.pdf crop.pdf > /dev/null 2>&1
 
-# Create metadata.
-echo "%%latuxit_hash $HASH" > metadata
-echo "%%latuxit_color $LATUXIT_COLOR" >> metadata
+    # Create metadata.
+    echo "%%latuxit_hash $HASH" > metadata
+    echo "%%latuxit_color $LATUXIT_COLOR" >> metadata
 
-# Append metadata to pdf
-cat crop.pdf metadata > temp
-mv temp crop.pdf
+    # Append metadata to pdf
+    cat crop.pdf metadata > temp
+    mv temp crop.pdf
 
-# Create postscript copy of equation.
-if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
-    gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
-    cat temp.ps metadata > temp
-    mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
-    rm temp.ps
+    # Create postscript copy of equation.
+    if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
+        gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
+        cat temp.ps metadata > temp
+        mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
+        rm temp.ps
+    fi
+
+    # Move pdf to user directory.
+    mv crop.pdf ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.pdf
+
+    # Clean up.
+    rm temp.pdf
+    rm temp.tex
+    rm temp.aux
+    rm temp.log
+    rm metadata
 fi
-
-# Move pdf to user directory.
-mv crop.pdf ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.pdf
-
-# Clean up.
-rm temp.pdf
-rm temp.tex
-rm temp.aux
-rm temp.log
-rm metadata
 
 # Purge equation library.
 if [ "$LATUXIT_PURGE" == "true" ]; then
@@ -338,7 +358,7 @@ if [ "$LATUXIT_PURGE" == "true" ]; then
 fi
 
 # Check library size and prune if necessary.
-library_size=`ls library/* | wc -l`
+library_size=`ls library/* 2> /dev/null | wc -l`
 library_overflow=$((library_size-LATUXIT_LIBRARY_SIZE))
 if [ $library_overflow -gt 0 ]; then
     for i in $( ls -tr library | head -n $library_overflow ); do
