@@ -118,7 +118,7 @@ library. It should be long enough to ensure a unique match. Once a match is foun
 ``` bash
 -b, --batch
 ```
-Run `latuxit` in "batch" mode. In batch mode, `latuxit` will no longer ask
+Run `latuxit` in "batch" mode. In batch mode `latuxit` will no longer ask
 the user to edit any failed equations. This is useful when processing a
 large number of equations using a batch script, e.g. when the user doesn't
 want to edit many potentially incorrect equations by hand, or deal with memory
