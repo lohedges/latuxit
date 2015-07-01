@@ -69,10 +69,10 @@ purge () {
 
 # Create unique identity hash for equation.
 equation_hash () {
-    if [[ `uname` == "Darwin" ]]; then
-        HASH=`echo $LATUXIT_EQUATION | md5`
+    if [[ $(uname) == "Darwin" ]]; then
+        HASH=$(echo "$LATUXIT_EQUATION" | md5)
     else
-        HASH=`echo $LATUXIT_EQUATION | md5sum | awk '{print $1}'`
+        HASH=$(echo "$LATUXIT_EQUATION" | md5sum | awk '{print $1}')
     fi
 }
 
@@ -80,8 +80,8 @@ equation_hash () {
 list () {
     if [ "$(ls -A library/)" ]; then
         for i in $(ls library/*); do
-            hash=`echo $i | awk -F "library/" '{print $2}'`
-            eqn=`cat $i`
+            hash=$(echo "$i" | awk -F "library/" '{print $2}')
+            eqn=$(cat "$i")
             echo "$hash \"$eqn\""
         done
         exit
@@ -119,9 +119,9 @@ while [ $# -gt 0 ]; do
         man latuxit; exit;;
     *.pdf|*.ps)
         LATUXIT_IMAGE="$1"; LATUXIT_IMAGE_SET=true
-        if [ "$(echo ${LATUXIT_IMAGE#*.})" == "pdf" ]; then
+        if [ "${LATUXIT_IMAGE#*.}" == "pdf" ]; then
             LATUXIT_IMAGE_TYPE=pdf
-        elif [ "$(echo ${LATUXIT_IMAGE#*.})" == "ps" ]; then
+        elif [ "${LATUXIT_IMAGE#*.}" == "ps" ]; then
             LATUXIT_IMAGE_TYPE=ps
         fi;;
     -*)
@@ -145,16 +145,16 @@ if [ ! -t 0 ]; then
     fi
 
     while read -r line ; do
-        echo $line >> latuxit.eqn
+        echo "$line" >> latuxit.eqn
     done
 
-    LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+    LATUXIT_EQUATION=$(cat latuxit.eqn); rm latuxit.eqn
 fi
 
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
     if [ -n "$LATUXIT_SEARCH_STRING" ]; then
-        list | grep $LATUXIT_SEARCH_STRING 2> /dev/null
+        list | grep "$LATUXIT_SEARCH_STRING" 2> /dev/null
         exit
     else
         echo " No search string was specified!"; exit
@@ -171,16 +171,16 @@ if [ "$LATUXIT_HASH_MODE" == "true" ]; then
 
     # Check if library is empty.
     if [ "$(ls -A library/)" ]; then
-        if ls library/${LATUXIT_HASH}* &> /dev/null; then
+        if ls library/"${LATUXIT_HASH}"* &> /dev/null; then
             # Find number of matches.
-            matches=`ls library/${LATUXIT_HASH}* | wc -l`
+            matches=$(ls library/"$LATUXIT_HASH"* | wc -l)
 
             if [ "$matches" -gt "1" ]; then
                 echo " Too many equations match, try longer hash sequence."; exit
             fi
 
             # Cat equation from library into equation file.
-            cat library/${LATUXIT_HASH}* > latuxit.eqn
+            cat library/"$LATUXIT_HASH"* > latuxit.eqn
         else
             echo " No match for hash! Exiting."; exit
         fi
@@ -199,7 +199,7 @@ if [ "$LATUXIT_IMAGE_SET" == "false" ]; then
             $LATUXIT_EDITOR latuxit.eqn
             if [ -f latuxit.eqn ]; then
                 if [ -s latuxit.eqn ]; then
-                    LATUXIT_EQUATION=`cat latuxit.eqn`; rm latuxit.eqn
+                    LATUXIT_EQUATION=$(cat latuxit.eqn); rm latuxit.eqn
                 else
                     echo " No equation defined. Exiting!"; exit
                 fi
@@ -214,24 +214,24 @@ else
     if [ "$LATUXIT_EQUATION_SET" == "true" ] || [ "$LATUXIT_STDIN_MODE" == "true" ]; then
         echo "Ignoring equation. Searching for image metadata instead."
     fi
-    if [ $(for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}') ]; then
-        HASH=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_hash; done | awk '{print $2}'`
+    if [ $(for i in "$CURRENT_DIR"/"$LATUXIT_IMAGE"; do strings "$i" | grep latuxit_hash; done | awk '{print $2}') ]; then
+        HASH=$(for i in "$CURRENT_DIR"/"$LATUXIT_IMAGE"; do strings "$i" | grep latuxit_hash; done | awk '{print $2}')
         if [ "$LATUXIT_COLOR_SET" == "false" ]; then
-            LATUXIT_COLOR=`for i in ${CURRENT_DIR}/$LATUXIT_IMAGE; do strings $i | grep latuxit_color; done | awk '{print $2}'`
+            LATUXIT_COLOR=$(for i in "$CURRENT_DIR"/"$LATUXIT_IMAGE"; do strings "$i" | grep latuxit_color; done | awk '{print $2}')
         fi
-        if [ -f library/$HASH ]; then
-            cp library/$HASH equation_backup
-            $LATUXIT_EDITOR library/$HASH
-            LATUXIT_EQUATION=`cat library/$HASH`
+        if [ -f library/"$HASH" ]; then
+            cp library/"$HASH" equation_backup
+            $LATUXIT_EDITOR library/"$HASH"
+            LATUXIT_EQUATION=$(cat library/"$HASH")
             if [ "$LATUXIT_FILE_NAME_SET" == "false" ]; then
-                LATUXIT_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
-                rm library/$HASH equation_backup
+                LATUXIT_FILE_NAME="${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}"
+                rm library/"$HASH" equation_backup
             else
-                OLD_FILE_NAME=`echo ${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}`
+                OLD_FILE_NAME="${LATUXIT_IMAGE%.$LATUXIT_IMAGE_TYPE}"
                 if [ "$OLD_FILE_NAME" == "$LATUXIT_FILE_NAME" ]; then
-                    rm library/$HASH equation_backup
+                    rm library/"$HASH" equation_backup
                 else
-                    mv equation_backup library/$HASH
+                    mv equation_backup library/"$HASH"
                 fi
             fi
         else
@@ -245,7 +245,7 @@ fi
 
 # Check for color support.
 if [ "$LATUXIT_COLOR" != "Black" ]; then
-    color_check=`grep -w $LATUXIT_COLOR latuxit.colors`
+    color_check=$(grep -w "$LATUXIT_COLOR" latuxit.colors)
     if [ "$LATUXIT_COLOR" != "$color_check" ]; then
         if [ "${LATUXIT_COLOR:0:1}" != "{" ]; then
             echo " $LATUXIT_COLOR is not a supported color."
@@ -255,10 +255,10 @@ if [ "$LATUXIT_COLOR" != "Black" ]; then
             echo " Alternatively, try RGB mode: --color=\"{R,G,B}\""
             exit
         else
-            color_check=`echo $LATUXIT_COLOR | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$'`
+            color_check=$(echo "$LATUXIT_COLOR" | grep '^{[0-9][0-9]*,[0-9][0-9]*,[0-9][0-9]*}$')
             rgb_style="RGB"
             if [ "$LATUXIT_COLOR" != "$color_check" ]; then
-                color_check=`echo $LATUXIT_COLOR | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$'`
+                color_check=$(echo "$LATUXIT_COLOR" | grep '^{[0-1][.][0-9]*,[0-1][.][0-9]*,[0-1][.][0-9]*}$')
                 rgb_style="rgb"
                 if [ "$LATUXIT_COLOR" != "$color_check" ]; then
                     echo "RGB string doesn't appear to be formatted correctly."
@@ -282,7 +282,7 @@ while [ "$exit_status" != "0" ]; do
     equation_hash
 
     # Store equation in library.
-    echo $LATUXIT_EQUATION > library/$HASH
+    echo "$LATUXIT_EQUATION" > library/"$HASH"
 
     # Create tex file.
     if [ "$LATUXIT_RGB_MODE" == "true" ]; then
@@ -302,12 +302,12 @@ while [ "$exit_status" != "0" ]; do
         if [ "$LATUXIT_BATCH_MODE" != "true" ]; then
             echo " Could not process equation, please edit..."
             sleep 1
-            $LATUXIT_EDITOR library/$HASH
-            LATUXIT_EQUATION=`cat library/$HASH`
-            rm -f library/$HASH
+            $LATUXIT_EDITOR library/"$HASH"
+            LATUXIT_EQUATION=$(cat library/"$HASH")
+            rm -f library/"$HASH"
         else
             # Delete failed equation from library.
-            rm -f library/$HASH
+            rm -f library/"$HASH"
 
             # Mark equation as failed.
             FAILED=true
@@ -337,12 +337,12 @@ if [ "$FAILED" != "true" ]; then
     if [ "$LATUXIT_POSTSCRIPT" == "true" ]; then
         gs -sDEVICE=ps2write -dNOCACHE -sOutputFile=temp.ps -q -dbatch -dNOPAUSE crop.pdf -c quit 2>&1
         cat temp.ps metadata > temp
-        mv temp ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.ps
+        mv temp "$CURRENT_DIR"/"$LATUXIT_FILE_NAME".ps
         rm temp.ps
     fi
 
     # Move pdf to user directory.
-    mv crop.pdf ${CURRENT_DIR}/${LATUXIT_FILE_NAME}.pdf
+    mv crop.pdf "$CURRENT_DIR"/"$LATUXIT_FILE_NAME".pdf
 
     # Clean up.
     rm temp.pdf
@@ -358,13 +358,13 @@ if [ "$LATUXIT_PURGE" == "true" ]; then
 fi
 
 # Check library size and prune if necessary.
-library_size=`ls library/* 2> /dev/null | wc -l`
+library_size=$(ls library/* 2> /dev/null | wc -l)
 library_overflow=$((library_size-LATUXIT_LIBRARY_SIZE))
 if [ $library_overflow -gt 0 ]; then
     for i in $( ls -tr library | head -n $library_overflow ); do
-        rm library/$i
+        rm library/"$i"
     done
 fi
 
 # Switch back to original directory.
-cd $CURRENT_DIR
+cd "$CURRENT_DIR"
