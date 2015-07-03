@@ -7,7 +7,7 @@ if [ ! -n "${PREFIX:-}" ]; then
 fi
 
 # Checks for root permission.
-if test "`id -u`" -ne 0; then
+if test "$(id -u)" -ne 0; then
     echo "Please run the uninstaller as root."
     exit
 fi
