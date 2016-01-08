@@ -27,6 +27,10 @@ $ make setup
 $ make install
 ```
 
+Note that a user workspace directory is created at `~/.latuxit`. This is where
+the `latuxit` configuration files and user equation library are stored. The ability
+to specify a custom path for the workspace directory will be added in a future version.
+
 `latuxit` can be completely removed from your system as follows:
 
 ```bash
@@ -119,7 +123,7 @@ default is `latuxit`.
 ```
 Lists all equations in the library along with their hash.
 
-``` bash 
+``` bash
 -s EQUATION, --search EQUATION
 ```
 Searches the equation library for all partial matches of `EQUATION`. The matches are
