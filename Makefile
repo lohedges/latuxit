@@ -123,25 +123,19 @@ clean:
 .PHONY: install
 install:
 	$(call colorecho, 3, "--> Installing LaTuXiT executable to $(PREFIX)/bin")
-	if [ -d $(PREFIX)/bin ]; then                       \
-		install -Dm755 latuxit $(PREFIX)/bin;           \
-	else                                                \
-		echo " $(PREFIX)/bin doesn't exist!";           \
-	fi
+	install -d $(PREFIX)/bin
+	install -m 0755 latuxit $(PREFIX)/bin
 	$(call colorecho, 3, "--> Installing LaTuXiT man page to $(PREFIX)/man/man1")
-	if [ -d $(PREFIX)/man/man1 ]; then                  \
-		install -Dm644 latuxit.1 $(PREFIX)/man/man1;	\
-		gzip -9f $(PREFIX)/man/man1/latuxit.1;          \
-	else                                                \
-		echo " $(PREFIX)/man/man1 doesn't exist!";      \
-	fi
+	install -d $(PREFIX)/man/man1
+	install -m 0644 latuxit.1 $(PREFIX)/man/man1
+	gzip -9f $(PREFIX)/man/man1/latuxit.1
 
 # Uninstall the executable and man page.
 .PHONY: uninstall
 uninstall:
 	$(call colorecho, 3, "--> Uninstalling LaTuXiT executable from $(PREFIX)/bin")
-	$(call colorecho, 3, "--> Uninstalling LaTuXiT man page from $(PREFIX)/man/man1")
 	rm -f $(PREFIX)/bin/latuxit
+	$(call colorecho, 3, "--> Uninstalling LaTuXiT man page from $(PREFIX)/man/man1")
 	rm -f $(PREFIX)/man/man1/latuxit.1.gz
 
 .PHONY: sandwich
