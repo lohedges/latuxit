@@ -1,6 +1,6 @@
 # LaTuXiT
 
-Copyright &copy; 2012-2015 Lester Hedges.
+Copyright &copy; 2012-2016 Lester Hedges.
 
 Released under the [GPL](http://www.gnu.org/copyleft/gpl.html).
 
@@ -23,13 +23,30 @@ processing many equations from a batch script.
 After cloning the repository `cd` to the `latuxit` directory and run:
 
 ```bash
-$ sudo ./install.sh
+$ make setup
+$ make install
 ```
 
 `latuxit` can be completely removed from your system as follows:
 
 ```bash
-$ sudo uninstall.sh
+$ make uninstall
+$ make clean
+```
+
+By default `latuxit` is installed to `/usr/local` so you may need admin privileges
+for the final `make install` step above. To install to a different location:
+
+```bash
+$ make setup
+$ make PREFIX=PATH install
+```
+
+And to uninstall from a custom path:
+
+```bash
+$ make PREFIX=PATH uninstall
+$ make clean
 ```
 
 ## Usage
