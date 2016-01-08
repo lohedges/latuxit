@@ -97,7 +97,7 @@ help:
 # Create the user workspace directories and copy across configuration files.
 .PHONY: setup
 setup:
-	$(call colorecho, 6, "--> Creating user directory and configuration files")
+	$(call colorecho, 4, "--> Creating user directory and configuration files")
 	if [ ! -d ~/.latuxit ]; then                       \
 		mkdir -p ~/.latuxit/library;                   \
 	fi
@@ -108,7 +108,7 @@ setup:
 # Clean user workspace directory.
 .PHONY: clean
 clean:
-	$(call colorecho, 6, "--> Cleaning user directory and configuration files")
+	$(call colorecho, 4, "--> Cleaning user directory and configuration files")
 	echo -n " Are you sure you want to remove the user directory [Y/n]? "
 	read -e clean;                                                              \
 	while [[ "$$clean" != "Y" && "$$clean" != "n" && "$$clean" != "N" ]]; do    \
@@ -122,10 +122,10 @@ clean:
 # Install executable and man page.
 .PHONY: install
 install:
-	$(call colorecho, 3, "--> Installing LaTuXiT executable to $(PREFIX)/bin")
+	$(call colorecho, 1, "--> Installing LaTuXiT executable to $(PREFIX)/bin")
 	install -d $(PREFIX)/bin
 	install -m 0755 latuxit $(PREFIX)/bin
-	$(call colorecho, 3, "--> Installing LaTuXiT man page to $(PREFIX)/man/man1")
+	$(call colorecho, 1, "--> Installing LaTuXiT man page to $(PREFIX)/man/man1")
 	install -d $(PREFIX)/man/man1
 	install -m 0644 latuxit.1 $(PREFIX)/man/man1
 	gzip -9f $(PREFIX)/man/man1/latuxit.1
@@ -133,9 +133,9 @@ install:
 # Uninstall the executable and man page.
 .PHONY: uninstall
 uninstall:
-	$(call colorecho, 3, "--> Uninstalling LaTuXiT executable from $(PREFIX)/bin")
+	$(call colorecho, 1, "--> Uninstalling LaTuXiT executable from $(PREFIX)/bin")
 	rm -f $(PREFIX)/bin/latuxit
-	$(call colorecho, 3, "--> Uninstalling LaTuXiT man page from $(PREFIX)/man/man1")
+	$(call colorecho, 1, "--> Uninstalling LaTuXiT man page from $(PREFIX)/man/man1")
 	rm -f $(PREFIX)/man/man1/latuxit.1.gz
 
 .PHONY: sandwich
