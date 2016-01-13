@@ -198,7 +198,7 @@ is true.
 ## Example workflow
 
 ### Basic usage
-Suppose we want a nice red image of the canonical partition function... here's a short
+Suppose we want a nice red image of the canonical partition function. Here's a short
 example of a possible LaTuXiT workflow.
 
 ``` bash
@@ -231,7 +231,7 @@ remember the syntax, but it's long and complicated so you don't really fancy att
 to type it out again. What do you do then?
 
 Thankfully `latuxit` offers a solution. As a starting point you could simply get
-`latuxit` to list all of the equations in the library and use grep to look for matches.
+`latuxit` to list all of the equations in the library and use `grep` to look for matches.
 
 ``` bash
 $ latuxit -l | grep "sin"
