@@ -18,7 +18,7 @@ equation string and building a library. Metadata written as comments in the outp
 and PostScript images allows `latuxit` to match an image to an equation in the library.
 `latuxit` has full RGB color support and also accepts any of the 68 standard colors
 known to dvips. Equations can be processed using several of the standard
-(amsmath)[http://www.ams.org/publications/authors/tex/amslatex] equation environments,
+[amsmath](http://www.ams.org/publications/authors/tex/amslatex) equation environments,
 and using custom LaTeX pre- and post-amble files. Due to its command-line nature,
 `latuxit` provides a handy way of processing many equations from a batch script.
 
