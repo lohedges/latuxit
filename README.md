@@ -274,22 +274,17 @@ Suppose you want to edit an equation but you've lost the image file. You can kin
 remember the syntax, but it's long and complicated so you don't really fancy attempting
 to type it out again. What do you do then?
 
-Thankfully `latuxit` offers a solution. As a starting point you could simply get
-`latuxit` to list all of the equations in the library and use `grep` to look for matches.
+Thankfully `latuxit` offers a solution. As a starting point you can run `latuxit`
+in "search" mode.
 
 ``` bash
-$ latuxit -l | grep "sin"
+$ latuxit -s 'sin'
+
 abade05b27e49e91c5873deabb8f82f2
 \cos^2 x +\sin^2 x = 1
 
 ee8ff71994abccb0897510910c944468
 \sin 2\theta = 2\sin \theta \cos \theta
-```
-
-Note that this is equivalent to running `latuxit` in "search" mode, i.e.
-
-``` bash
-$ latuxit -s sin
 ```
 
 The output shows a list of matching hashes from the library and the corresponding
