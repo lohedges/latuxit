@@ -280,10 +280,10 @@ in "search" mode.
 ``` bash
 $ latuxit -s 'sin'
 
-abade05b27e49e91c5873deabb8f82f2
+dabade05b27e49e91c5873deabb8f82f2
 \cos^2 x +\sin^2 x = 1
 
-ee8ff71994abccb0897510910c944468
+dee8ff71994abccb0897510910c944468
 \sin 2\theta = 2\sin \theta \cos \theta
 ```
 
@@ -296,7 +296,7 @@ abort if multiple matches are found. The equation will be opened in an editor so
 it can be modified prior to processing.
 
 ``` bash
-$ latuxit -m abad
+$ latuxit -m dabad
 ```
 
 <p align="center">
