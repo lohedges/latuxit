@@ -33,7 +33,7 @@
 .de Id
 .ds Dt \\$4
 ..
-.Id $Id: latuxit.1,v 1.00 2014/05/15 17:43:32 lester Exp $
+.Id $Id: latuxit.1,v 1.00 2016/06/03 10:13:32 lester Exp $
 .TH LATUXIT 1 \*(Dt "Lester Hedges"
 .SH NAME
 latuxit \- create a cropped LaTeX equation in PDF and PostScript format.
@@ -77,13 +77,18 @@ and
 .B PostScript
 images of
 .B LaTeX
-typset equations processed by the
+typeset equations processed by the
 .B pdflatex
 utility.
 .B latuxit
 has full RGB color support and also accepts any of the 68 standard colors known
 to
 .BR dvips .
+Equations can be processed using several of the standard
+.B amsmath
+equation environments, and using custom
+.B LaTeX
+pre- and post-amble files.
 Like
 .BR LaTeXiT ,
 .B latuxit
@@ -133,17 +138,12 @@ will proceed as normal once the file has been saved and closed.
 .I EQUATION
 in LaTeX markup. No $ symbols are needed. The
 .I EQUATION
-should be surrounded by double quotation marks, i.e. "\fIEQUATION\fP"\fR, to
-ensure that it is parsed correctly. When the equation starts with a minus
-sign make sure the character is enclosed in curly braces,
-i.e. "\fI{-}...\fP"\fR , so that it isn't mistaken as an identifier for a
+should be surrounded by single quotation marks, i.e. '\fIEQUATION\fP'\fR, to
+ensure that it is parsed correctly (strong quoting). When the equation starts
+with a minus sign make sure the character is enclosed in curly braces,
+i.e. '\fI{-}...\fP'\fR , so that it isn't mistaken as an identifier for a
 command-line argument. Alternatively, simply insert a blank space at the start
 of the equation. This will be ignored by LaTeX when the equation is typset.
-If the line break command
-.B \e\e
-is needed, e.g. in a matrix, then three backslashes should be used to ensure
-that the equation is parsed correctly, i.e.
-.BR \e\e\e .
 If no
 .I EQUATION
 is passed on the command-line or from stdin then
@@ -167,7 +167,7 @@ is one of the 68 standard colors defined in
 or, alternatively, a
 .I COLOR
 in {R,G,B} format, where R,G,B=[0\-1.0], or [0\-255]. RGB colors should be
-surrounded by double quotation marks, i.e. "\fI{R,G,B}\fP"\fR, to ensure
+surrounded by single quotation marks, i.e. '\fI{R,G,B}\fP'\fR, to ensure
 they are parsed correctly. Also make sure that there aren't any blank spaces
 on either side of any of the RGB values.
 .TP
@@ -177,6 +177,24 @@ is a prefix used for all output images, e.g
 .IR FILE_PREFIX .pdf.
 The default is
 .BR latuxit .
+.TP
+.BR \-d ", " \-\^\-displaymath
+Sets the equation environment to
+.BR displaymath .
+This is the default environment. When setting an environment from the
+command-line the final option will take precedence. The command-line
+environment also takes precedence when processing an equation in hash
+mode, or when reprocessing and existing
+.B latuxit
+image.
+.TP
+.BR \-a ", " \-\^\-align
+Sets the equation environment to
+.BR align .
+.TP
+.BR \-g ", " \-\^\-gather
+Sets the equation environment to
+.BR gather .
 .TP
 .BR \-l ", " \-\^\-list
 Lists all equations in the library along with their hash.
@@ -196,6 +214,10 @@ ensure a unique match. Once a match is found,
 .B latuxit
 will open the equation for editing with
 .BR LATUXIT_EDITOR .
+Hashes are generated using the
+.B md5sum
+algorithm. A single letter prefix is added to specify the equation environment
+that was used to process the equation.
 .TP
 .BR \-b ", " \-\^\-batch
 Run
@@ -216,6 +238,20 @@ prefix.
 .TP
 .BR \-p ", " \-\^\-purge
 Purge the equation library.
+.TP
+.BI \-pre " PREAMBLE" "\fR,\fP \-\^\-preamble "PREAMBLE
+Load a custom LaTeX preamble file. The
+.I PREAMBLE
+should be an appropriately formatted
+.B tex
+file.
+.TP
+.BI \-post " POSTAMBLE" "\fR,\fP \-\^\-postamble "POSTAMBLE
+Load a custom LaTeX postamble file. The
+.I POSTAMBLE
+should be an appropriately formatted
+.B tex
+file.
 .TP
 .BR \-h ", " \-\^\-help
 Get help (loads the man page).
@@ -275,6 +311,18 @@ Whether to also save a PostScript copy of the output PDF. The default is
 Whether to ask for confirmation before purging the equation library. The default
 is
 .BR true .
+.TP
+.B LATUXIT_PREAMBLE
+The default
+.B LaTeX
+preamble,
+.BR ~/.latuxit/preamble.tex .
+.TP
+.B LATUXIT_POSTAMBLE
+The default
+.B LaTeX
+postamble,
+.BR ~/.latuxit/postamble.tex .
 .SH CREDITS
 .PP
 .BR LaTeXiT ,
