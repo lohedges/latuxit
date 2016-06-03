@@ -7,7 +7,8 @@ Released under the [GPL](http://www.gnu.org/copyleft/gpl.html).
 ## About
 `latuxit` is a a command-line Linux clone of the excellent Mac OS X program
 [LaTeXiT](http://pierre.chachatelier.fr/latexit). It provides a simple means of
-creating cropped LaTeX typset equations in both PDF and PostScript format.
+creating cropped [LaTeX](https://www.latex-project.org) typeset equations in
+both PDF and PostScript format.
 
 The program is a simple Bash script that requires no dependencies outside of the
 standard Tex Live core (other than Ghostscript for additional PostScript support).
@@ -16,8 +17,10 @@ lookup feature to allow editing of existing equations. `latuxit` works by hashin
 equation string and building a library. Metadata written as comments in the output PDF
 and PostScript images allows `latuxit` to match an image to an equation in the library.
 `latuxit` has full RGB color support and also accepts any of the 68 standard colors
-known to dvips. Due to its command-line nature, `latuxit` provides a handy way of
-processing many equations from a batch script.
+known to dvips. Equations can be processed using several of the standard
+(amsmath)[http://www.ams.org/publications/authors/tex/amslatex] equation environments,
+and using custom LaTeX pre- and post-amble files. Due to its command-line nature,
+`latuxit` provides a handy way of processing many equations from a batch script.
 
 ## Installation
 After cloning the repository `cd` to the `latuxit` directory and run:
@@ -91,24 +94,22 @@ been saved and closed.
 ```
 
 `EQUATION` in LaTeX markup. No `$` symbols are needed. The `EQUATION` should be
-surrounded by double quotation marks, i.e. `"EQUATION"`, to ensure that it is parsed
-correctly. When the equation starts with a minus sign make sure the character is
-enclosed in curly braces, i.e. `"{-}..."` , so that it isn't mistaken as an identifier
-for a command-line argument. Alternatively, simply insert a blank space at the start of
-the equation. This will be ignored by LaTeX when the equation is typset. If the line
-break command `\\` is needed, e.g. in a matrix, then three backslashes should be used
-to ensure that the equation is parsed correctly, i.e. `\\\`. If no `EQUATION` is
-passed on the command-line or from stdin then `latuxit` will open the `EQUATION`
-editor defined by the `LATUXIT_EDITOR` environment variable. If `pdflatex` fails to
-process an `EQUATION` then the user will be given the opportunity to edit it again
-in order to correct any mistakes.
+surrounded by single quotation marks, i.e. `'EQUATION'`, to ensure that it is parsed
+correctly (strong quoting). When the equation starts with a minus sign make sure the
+character is enclosed in curly braces, i.e. `'{-}...'` , so that it isn't mistaken as
+an identifier for a command-line argument. Alternatively, simply insert a blank space
+at the start of the equation. This will be ignored by LaTeX when the equation is typset.
+If no `EQUATION` is passed on the command-line or from stdin then `latuxit` will open
+the `EQUATION` editor defined by the `LATUXIT_EDITOR` environment variable. If `pdflatex`
+fails to process an `EQUATION` then the user will be given the opportunity to edit it
+again in order to correct any mistakes.
 
 ``` bash
 -c COLOR, --color COLOR
 ```
 Where `COLOR` is one of the 68 standard colors defined in `~/.latuxit/latuxit.colors`,
 or, alternatively, a `COLOR` in `{R,G,B}` format, where `R,G,B=[0-1.0]`, or `[0-255]`.
-`RGB` colors should be surrounded by double quotation marks, i.e. `"{R,G,B}"`, to
+`RGB` colors should be surrounded by double quotation marks, i.e. `'{R,G,B}'`, to
 ensure they are parsed correctly. Also make sure that there aren't any blank spaces on
 either side of any of the `RGB` values.
 
@@ -117,6 +118,24 @@ either side of any of the `RGB` values.
 ```
 `FILE_PREFIX` is a prefix used for all output images, e.g `FILE_PREFIX.pdf`. The
 default is `latuxit`.
+
+``` bash
+-d, --displaymath
+```
+Sets the equation environment to `displaymath`. This is the default environment.
+When setting an environment from the command-line the final option will take
+precedence. The command-line environment also takes precedence when processing an
+image in hash mode, or when reprocessing and existing `latuxit` image.
+
+``` bash
+-a, --align
+```
+Sets the equation environment to `align`.
+
+``` bash
+-g, --gather
+```
+Sets the equation environment to `gather`.
 
 ``` bash
 -l, --list
@@ -134,7 +153,10 @@ output along with the corresponding hash.
 ```
 Run `latuxit` in "hash" mode. The `HASH` string is matched against equations in the
 library. It should be long enough to ensure a unique match. Once a match is found,
-`latuxit` will open the equation for editing with `LATUXIT_EDITOR`.
+`latuxit` will open the equation for editing with `LATUXIT_EDITOR`. Hashes are
+generated using the `md5sum` algorithm. A single letter prefix is added to specify
+the equation environment that was used to process the equation.
+
 
 ``` bash
 -b, --batch
@@ -150,6 +172,18 @@ will be reported to `stdout` along with the `[FAILED]` prefix.
 -p, --purge
 ```
 Purge the equation library.
+
+``` bash
+-pre PREAMBLE, --preamble PREAMBLE
+```
+Load a custom LaTeX preamble file. The `PREAMBLE` should be an appropriately
+formatted `tex` file.
+
+``` bash
+-post POSTAMBLE, --postamble POSTAMBLE
+```
+Load a custom LaTeX postamble file. The `POSTAMBLE` should be an appropriately
+formatted `tex` file.
 
 ``` bash
 -h, --help
@@ -195,6 +229,16 @@ LATUXIT_PURGE_CONFIRMATION
 Whether to ask for confirmation	before purging the equation library. The default
 is true.
 
+``` bash
+LATUXIT_PREAMBLE
+```
+The default LaTeX preamble, `~/.latuxit/preamble.tex`.
+
+``` bash
+LATUXIT_POSTAMBLE
+```
+The default LaTeX postamble, `~/.latuxit/postamble.tex`.
+
 ## Example workflow
 
 ### Basic usage
@@ -202,7 +246,7 @@ Suppose we want a nice red image of the canonical partition function. Here's a s
 example of a possible LaTuXiT workflow.
 
 ``` bash
-$ latuxit -e "Z=\sum_s e^{\beta E_s}" -c "Red"
+$ latuxit -e 'Z=\sum_s e^{\beta E_s}' -c 'Red'
 ```
 
 There should now be two files in the working directory: `latuxit.pdf`, and
@@ -217,7 +261,7 @@ instead. The following command will extract equation metadata from `latuxit.pdf`
 open the equation in an editor where it can be corrected. Easy!
 
 ``` bash
-$ latuxit latuxit.pdf -c "{102,255,0}"
+$ latuxit latuxit.pdf -c '{102,255,0}'
 ```
 Let's check the modified image. Snazzy.
 
@@ -235,25 +279,29 @@ Thankfully `latuxit` offers a solution. As a starting point you could simply get
 
 ``` bash
 $ latuxit -l | grep "sin"
-abade05b27e49e91c5873deabb8f82f2 "\cos^2 x +\sin^2 x = 1"
-ee8ff71994abccb0897510910c944468 "\sin 2\theta = 2\sin \theta \cos \theta"
+abade05b27e49e91c5873deabb8f82f2
+\cos^2 x +\sin^2 x = 1
+
+ee8ff71994abccb0897510910c944468
+\sin 2\theta = 2\sin \theta \cos \theta
 ```
 
 Note that this is equivalent to running `latuxit` in "search" mode, i.e.
 
 ``` bash
-$ latuxit -s "sin"
+$ latuxit -s sin
 ```
 
-The two column output shows a list of matching hashes from the library and the
-corresponding equations. Say the first match is the equation that we want. To reprocess
+The output shows a list of matching hashes from the library and the corresponding
+equations. (Note that you should try to match against the first line of any multiline
+equation.) Say the first match is the equation that we want. To reprocess
 it we can simply run `latuxit` in hash mode. The hash string that is passed as a
 command-line argument should be long enough to ensure a unique match. `latuxit` will
 abort if multiple matches are found. The equation will be opened in an editor so that
 it can be modified prior to processing.
 
 ``` bash
-$ latuxit -m "abad"
+$ latuxit -m abad
 ```
 
 <p align="center">
