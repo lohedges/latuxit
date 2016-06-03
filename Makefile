@@ -104,6 +104,12 @@ setup:
 	if [ ! -f ~/.latuxit/latuxit.colors ]; then        \
 		cp latuxit.colors ~/.latuxit;                  \
 	fi
+	if [ ! -f ~/.latuxit/preamble.tex ]; then          \
+		cp preamble.tex ~/.latuxit;                    \
+	fi
+	if [ ! -f ~/.latuxit/postamble.tex ]; then         \
+		cp postamble.tex ~/.latuxit;                   \
+	fi
 
 # Clean user workspace directory.
 .PHONY: clean

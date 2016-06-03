@@ -33,7 +33,14 @@ LATUXIT_HASH_MODE=false
 LATUXIT_STDIN_MODE=false
 LATUXIT_SEARCH_MODE=false
 LATUXIT_BATCH_MODE=false
+LATUXIT_EQUATION_ENVIRONMENT=d
+LATUXIT_EQUATION_ENVIRONMENT_SET=false
+LATUXIT_DISPLAYMATH_MODE=true
+LATUXIT_ALIGN_MODE=false
+LATUXIT_GATHER_MODE=false
 LATUXIT_PURGE=false
+LATUXIT_PREAMBLE=~/.latuxit/preamble.tex
+LATUXIT_POSTAMBLE=~/.latuxit/postamble.tex
 
 # Source latuxit user variables.
 if [ -f ~/.latuxitrc ]; then
@@ -45,6 +52,18 @@ fi
 # Check for color file.
 if [ ! -f ~/.latuxit/latuxit.colors ]; then
     echo " Missing ~/.latuxit/latuxit.colors"
+    exit
+fi
+
+# Check for preamble file.
+if [ ! -f ~/.latuxit/preamble.tex ]; then
+    echo " Missing ~/.latuxit/preamble.tex"
+    exit
+fi
+
+# Check for postamble file.
+if [ ! -f ~/.latuxit/postamble.tex ]; then
+    echo " Missing ~/.latuxit/postamble.tex"
     exit
 fi
 
@@ -71,8 +90,10 @@ purge () {
 equation_hash () {
     if [[ $(uname) == "Darwin" ]]; then
         HASH=$(echo "$LATUXIT_EQUATION" | md5)
+        HASH="${LATUXIT_EQUATION_ENVIRONMENT}${HASH}"
     else
         HASH=$(echo "$LATUXIT_EQUATION" | md5sum | awk '{print $1}')
+        HASH="${LATUXIT_EQUATION_ENVIRONMENT}${HASH}"
     fi
 }
 
@@ -82,7 +103,9 @@ list () {
         for i in $(ls library/*); do
             hash=$(echo "$i" | awk -F "library/" '{print $2}')
             eqn=$(cat "$i")
-            echo "$hash \"$eqn\""
+            echo "$hash"
+            echo "$eqn"
+            echo
         done
         exit
     else
@@ -93,12 +116,30 @@ list () {
 # Simple parser for command line options.
 while [ $# -gt 0 ]; do
     case "$1" in
+    -a|--align)
+        LATUXIT_ALIGN_MODE=true;
+        LATUXIT_DISPLAYMATH_MODE=false;
+        LATUXIT_GATHER_MODE=false;
+        LATUXIT_EQUATION_ENVIRONMENT=a;
+        LATUXIT_EQUATION_ENVIRONMENT_SET=true;;
+    -d|--displaymath)
+        LATUXIT_DISPLAYMATH_MODE=true;
+        LATUXIT_ALIGN_MODE=false;
+        LATUXIT_GATHER_MODE=false;
+        LATUXIT_EQUATION_ENVIRONMENT=d;
+        LATUXIT_EQUATION_ENVIRONMENT_SET=true;;
     -e|--equation)
         LATUXIT_EQUATION="$2";
         LATUXIT_EQUATION_SET=true;;
     -c|--color)
         LATUXIT_COLOR="$2";
         LATUXIT_COLOR_SET=true;;
+    -g|--gather)
+        LATUXIT_GATHER_MODE=true;
+        LATUXIT_DISPLAYMATH_MODE=false;
+        LATUXIT_ALIGN_MODE=false;
+        LATUXIT_EQUATION_ENVIRONMENT=g;
+        LATUXIT_EQUATION_ENVIRONMENT_SET=true;;
     -o|--output)
         LATUXIT_FILE_NAME="$2";
         LATUXIT_FILE_NAME_SET=true;;
@@ -115,6 +156,20 @@ while [ $# -gt 0 ]; do
         LATUXIT_BATCH_MODE=true;;
     -p|--purge)
         LATUXIT_PURGE=true;;
+    -pre|--preamble)
+        if [ -f "$2" ]; then
+            LATUXIT_PREAMBLE="$2"
+        else
+            echo " Preamble file not found: \"$2\"";
+            exit
+        fi;;
+    -post|--postamble)
+        if [ -f "$2" ]; then
+            LATUXIT_POSTAMBLE="$2"
+        else
+            echo " Postamble file not found: \"$2\"";
+            exit
+        fi;;
     -h|--help)
         man latuxit; exit;;
     *.pdf|*.ps)
@@ -154,7 +209,7 @@ fi
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
     if [ -n "$LATUXIT_SEARCH_STRING" ]; then
-        list | grep "$LATUXIT_SEARCH_STRING" 2> /dev/null
+        list | grep -B 1 "$LATUXIT_SEARCH_STRING" 2> /dev/null
         exit
     else
         echo " No search string was specified!"; exit
@@ -179,8 +234,31 @@ if [ "$LATUXIT_HASH_MODE" == "true" ]; then
                 echo " Too many equations match, try longer hash sequence."; exit
             fi
 
+            # Store the full hash.
+            LATUXIT_HASH=$(ls library/"$LATUXIT_HASH"*)
+            LATUXIT_HASH=${LATUXIT_HASH##*/}
+
             # Cat equation from library into equation file.
-            cat library/"$LATUXIT_HASH"* > latuxit.eqn
+            cat library/$LATUXIT_HASH > latuxit.eqn
+
+            # If equation environment is unset, set to previous environment.
+            if [ "$LATUXIT_EQUATION_ENVIRONMENT_SET" == "false" ]; then
+                LATUXIT_EQUATION_ENVIRONMENT=${LATUXIT_HASH:0:1}
+
+                if [ "$LATUXIT_EQUATION_ENVIRONMENT" == "a" ]; then
+                    LATUXIT_ALIGN_MODE=true
+                    LATUXIT_DISPLAYMATH_MODE=false
+                    LATUXIT_GATHER_MODE=false
+                elif [ "$LATUXIT_EQUATION_ENVIRONMENT" == "d" ]; then
+                    LATUXIT_DISPLAYMATH_MODE=true
+                    LATUXIT_ALIGN_MODE=false
+                    LATUXIT_GATHER_MODE=false
+                elif [ "$LATUXIT_EQUATION_ENVIRONMENT" == "g" ]; then
+                    LATUXIT_GATHER_MODE=true
+                    LATUXIT_DISPLAYMATH_MODE=false
+                    LATUXIT_ALIGN_MODE=false
+                fi
+            fi
         else
             echo " No match for hash! Exiting."; exit
         fi
@@ -219,6 +297,26 @@ else
         if [ "$LATUXIT_COLOR_SET" == "false" ]; then
             LATUXIT_COLOR=$(for i in "$CURRENT_DIR"/"$LATUXIT_IMAGE"; do strings "$i" | grep latuxit_color; done | awk '{print $2}')
         fi
+
+        # If equation environment is unset, set to previous environment.
+        if [ "$LATUXIT_EQUATION_ENVIRONMENT_SET" == "false" ]; then
+            LATUXIT_EQUATION_ENVIRONMENT=${LATUXIT_HASH:0:1}
+
+            if [ "$LATUXIT_EQUATION_ENVIRONMENT" == "a" ]; then
+                LATUXIT_ALIGN_MODE=true
+                LATUXIT_DISPLAYMATH_MODE=false
+                LATUXIT_GATHER_MODE=false
+            elif [ "$LATUXIT_EQUATION_ENVIRONMENT" == "d" ]; then
+                LATUXIT_DISPLAYMATH_MODE=true
+                LATUXIT_ALIGN_MODE=false
+                LATUXIT_GATHER_MODE=false
+            elif [ "$LATUXIT_EQUATION_ENVIRONMENT" == "g" ]; then
+                LATUXIT_GATHER_MODE=true
+                LATUXIT_DISPLAYMATH_MODE=false
+                LATUXIT_ALIGN_MODE=false
+            fi
+        fi
+
         if [ -f library/"$HASH" ]; then
             cp library/"$HASH" equation_backup
             $LATUXIT_EDITOR library/"$HASH"
@@ -284,12 +382,29 @@ while [ "$exit_status" != "0" ]; do
     # Store equation in library.
     echo "$LATUXIT_EQUATION" > library/"$HASH"
 
-    # Create tex file.
+    # Create Tex file.
+    cat "$LATUXIT_PREAMBLE" > temp.tex
     if [ "$LATUXIT_RGB_MODE" == "true" ]; then
-        echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\definecolor{rgb_color}{$rgb_style}$LATUXIT_COLOR\begin{document}\pagestyle{empty}\textcolor{rgb_color}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+        echo "\definecolor{rgb_color}{$rgb_style}$LATUXIT_COLOR" >> temp.tex
+        echo "\textcolor{rgb_color}{" >> temp.tex
     else
-        echo "\documentclass{article}\usepackage[usenames,dvipsnames]{xcolor}\begin{document}\pagestyle{empty}\textcolor{$LATUXIT_COLOR}{\[" $LATUXIT_EQUATION "\]}\end{document}" > temp.tex
+        echo "\textcolor{$LATUXIT_COLOR}{" >> temp.tex
     fi
+    # Check equation environment.
+    if [ "$LATUXIT_ALIGN_MODE" == "true" ]; then
+        echo "\begin{align*}"
+        echo "$LATUXIT_EQUATION"
+        echo "\end{align*}}"
+    elif [ "$LATUXIT_GATHER_MODE" == "true" ]; then
+        echo "\begin{gather*}"
+        echo "$LATUXIT_EQUATION"
+        echo "\end{gather*}}"
+    else
+        echo "\begin{displaymath}"
+        echo "$LATUXIT_EQUATION"
+        echo "\end{displaymath}}"
+    fi >> temp.tex
+    cat "$LATUXIT_POSTAMBLE" >> temp.tex
 
     # Process tex file.
     pdflatex -halt-on-error temp.tex > /dev/null 2>&1
