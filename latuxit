@@ -209,7 +209,7 @@ fi
 # Perform equation search (ignores all other options).
 if [ "$LATUXIT_SEARCH_MODE" == "true" ]; then
     if [ -n "$LATUXIT_SEARCH_STRING" ]; then
-        list | grep -B 1 "$LATUXIT_SEARCH_STRING" 2> /dev/null
+        list | awk -v RS='' -v ORS="\n\n" '/'$LATUXIT_SEARCH_STRING'/' 2> /dev/null
         exit
     else
         echo " No search string was specified!"; exit
