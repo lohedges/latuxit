@@ -155,7 +155,7 @@ Run `latuxit` in "hash" mode. The `HASH` string is matched against equations in 
 library. It should be long enough to ensure a unique match. Once a match is found,
 `latuxit` will open the equation for editing with `LATUXIT_EDITOR`. Hashes are
 generated using the `md5sum` algorithm. A single letter prefix is added to specify
-the equation environment that was used to process the equation, e.g. 'd' for
+the equation environment that was used to process the equation, e.g. `d` for
 displaymath.
 
 
