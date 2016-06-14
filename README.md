@@ -70,7 +70,7 @@ $ latuxit [options]
 * Equation passed via stdin. (*three examples*)
 
 ``` bash
-$ echo "equation" | latuxit [options]
+$ echo 'equation' | latuxit [options]
 $ cat [FILE] | latuxit [options]
 $ latuxit < [FILE] [options]
 ```
