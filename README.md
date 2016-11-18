@@ -26,8 +26,8 @@ and using custom LaTeX pre- and post-amble files. Due to its command-line nature
 After cloning the repository `cd` to the `latuxit` directory and run:
 
 ```bash
-$ make setup
-$ make install
+make setup
+make install
 ```
 
 Note that a user workspace directory is created at `~/.latuxit`. This is where
@@ -37,23 +37,23 @@ to specify a custom path for the workspace directory will be added in a future v
 `latuxit` can be completely removed from your system as follows:
 
 ```bash
-$ make uninstall
-$ make clean
+make uninstall
+make clean
 ```
 
 By default `latuxit` is installed to `/usr/local` so you may need admin privileges
 for the final `make install` step above. To install to a different location:
 
 ```bash
-$ make setup
-$ make PREFIX=PATH install
+make setup
+make PREFIX=PATH install
 ```
 
 And to uninstall from a custom path:
 
 ```bash
-$ make PREFIX=PATH uninstall
-$ make clean
+make PREFIX=PATH uninstall
+make clean
 ```
 
 ## Usage
@@ -64,22 +64,22 @@ illustrated below.
 * Equation passed using the command-line option or typed in an editor.
 
 ``` bash
-$ latuxit [options]
+latuxit [options]
 ```
 
 * Equation passed via stdin. (*three examples*)
 
 ``` bash
-$ echo 'equation' | latuxit [options]
-$ cat [FILE] | latuxit [options]
-$ latuxit < [FILE] [options]
+echo 'equation' | latuxit [options]
+cat [FILE] | latuxit [options]
+latuxit < [FILE] [options]
 ```
 
 * Existing image edited using reverse lookup feature. (*two examples*)
 
 ``` bash
-$ latuxit [IMAGE]
-$ latuxit [IMAGE] [options]
+latuxit [IMAGE]
+latuxit [IMAGE] [options]
 ```
 
 ## Options
@@ -247,7 +247,7 @@ Suppose we want a nice red image of the canonical partition function. Here's a s
 example of a possible LaTuXiT workflow.
 
 ``` bash
-$ latuxit -e 'Z=\sum_s e^{\beta E_s}' -c 'Red'
+latuxit -e 'Z=\sum_s e^{\beta E_s}' -c 'Red'
 ```
 
 There should now be two files in the working directory: `latuxit.pdf`, and
@@ -262,7 +262,7 @@ instead. The following command will extract equation metadata from `latuxit.pdf`
 open the equation in an editor where it can be corrected. Easy!
 
 ``` bash
-$ latuxit latuxit.pdf -c '{102,255,0}'
+latuxit latuxit.pdf -c '{102,255,0}'
 ```
 Let's check the modified image. Snazzy.
 
@@ -279,7 +279,7 @@ Thankfully `latuxit` offers a solution. As a starting point you can run `latuxit
 in "search" mode.
 
 ``` bash
-$ latuxit -s 'sin'
+latuxit -s 'sin'
 
 dabade05b27e49e91c5873deabb8f82f2
 \cos^2 x +\sin^2 x = 1
@@ -297,7 +297,7 @@ abort if multiple matches are found. The equation will be opened in an editor so
 it can be modified prior to processing.
 
 ``` bash
-$ latuxit -m dabad
+latuxit -m dabad
 ```
 
 <p align="center">
