@@ -5,7 +5,7 @@ Copyright &copy; 2012-2016 Lester Hedges.
 Released under the [GPL](http://www.gnu.org/copyleft/gpl.html).
 
 ## About
-`latuxit` is a a command-line Linux clone of the excellent Mac OS X program
+`latuxit` is a a command-line Linux clone of the excellent macOS program
 [LaTeXiT](http://pierre.chachatelier.fr/latexit). It provides a simple means of
 creating cropped [LaTeX](https://www.latex-project.org) typeset equations in
 both PDF and PostScript format.
