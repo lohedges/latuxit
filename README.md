@@ -254,7 +254,7 @@ There should now be two files in the working directory: `latuxit.pdf`, and
 `latuxuit.ps`. Let's open `latuxit.pdf` and see what it looks like
 
 <p align="center">
-  <img src="http://i179.photobucket.com/albums/w319/scratchmandoo/website/code/latuxit/partition_1_zps330dea8e.png"  width=200/>
+  <img src="https://lh3.googleusercontent.com/70j_kWU2GLUfmny7xEYo-HwsnbHVXoCk_sRCTyi9SSD8ymWAfxYP4MbYEIMICxyeIutlCn55NN8P4B5bIA=w200-no"  width=200/>
 </p>
 
 Whoops, it looks like we missed a minus sign, and how about we make the equation green
@@ -267,7 +267,7 @@ latuxit latuxit.pdf -c '{102,255,0}'
 Let's check the modified image. Snazzy.
 
 <p align="center">
-  <img src="http://i179.photobucket.com/albums/w319/scratchmandoo/website/code/latuxit/partition_2_zpseedb3cab.png"  width=200/>
+  <img src="https://lh3.googleusercontent.com/IY4X91rJVKigPaQfJQzLgKHnBAC1WUgqns7UTPrjbHSc3aasC04d3aIMXuKterwCTYsXF-TPAf9Z4QLEBg=w220-no"  width=200/>
 </p>
 
 ### Searching the equation library
@@ -301,7 +301,7 @@ latuxit -m dabad
 ```
 
 <p align="center">
-  <img src="http://i179.photobucket.com/albums/w319/scratchmandoo/website/code/latuxit/pythag_zps2a141f16.png"  width=200/>
+  <img src="https://lh3.googleusercontent.com/0lYRL-YF23WL7H-LGt2hLrUiRY0LLUC1cgnLSj5TnBl5h3B4hp8jCHzmWaqnBVI5vMkG39HUOED_FJQEyQ=w220-no"  width=200/>
 </p>
 
 ## Credits
